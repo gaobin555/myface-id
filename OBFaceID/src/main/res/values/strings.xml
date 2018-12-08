@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">OBFaceID</string>
+
+    <string name="no_device">未检测到设备</string>
+    <string name="open_fail_device">打开设备失败</string>
+    <string name="liveness_check_invalid">不在活体检测范围</string>
+    <string name="liveness_check_fail">非活体</string>
+    <string name="liveness_check_success">活体检测通过</string>
+    <string name="sign_out">再按一次返回键退出应用</string>
+
+
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="no_usb_width">546.66dp</dimen>
+    <dimen name="no_usb_height">410.0dp</dimen>
+
+</resources>

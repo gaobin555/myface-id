@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="color_width">546.66dp</dimen>
+    <dimen name="color_height">410.0dp</dimen>
+
+    <dimen name="recognition_tip_margin_top">100.0dp</dimen>
+    <dimen name="recognition_tip_size">26.66dp</dimen>
+
+    <dimen name="dimen_240">160.0dp</dimen>
+    <dimen name="dimen_320">213.33dp</dimen>
+</resources>
