@@ -3,35 +3,35 @@ package com.orbbec.utils;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.orbbec.model.User;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 
 /**
- *
- * @author mac
- * @date 16/7/11
+ * 本地数据库使用帮助类
+ * Created by mac on 16/7/11.
  */
 public class DataSource {
     private SQLiteDatabase database;
-    private MySqLiteHelper dbHelper;
+    private MySQLiteHelper dbHelper;
     private String[] allColumns = {
-            MySqLiteHelper.USER_ID,
-            MySqLiteHelper.PERSON_ID,
-            MySqLiteHelper.USER_NAME,
-            MySqLiteHelper.USER_AGE,
-            MySqLiteHelper.USER_GENDER,
-            MySqLiteHelper.USER_SCORE,
-            MySqLiteHelper.USER_BIRTH
+            MySQLiteHelper.USER_ID,
+            MySQLiteHelper.PERSON_ID,
+            MySQLiteHelper.SERVER_PERSON_ID,
+            MySQLiteHelper.USER_NAME,
+            MySQLiteHelper.USER_AGE,
+            MySQLiteHelper.USER_GENDER,
+            MySQLiteHelper.USER_SCORE
     };
 
     public DataSource(Context context) {
-        dbHelper = new MySqLiteHelper(context);
+        dbHelper = new MySQLiteHelper(context);
     }
 
     public void open() {
@@ -42,63 +42,61 @@ public class DataSource {
         dbHelper.close();
     }
 
+    public long insert(User user) {
 
-    public void insert(User user) {
         open();
         ContentValues values = new ContentValues();
-        values.put(MySqLiteHelper.PERSON_ID, user.getPersonId());
-        values.put(MySqLiteHelper.USER_NAME, user.getName());
-        values.put(MySqLiteHelper.USER_AGE, user.getAge());
-        values.put(MySqLiteHelper.USER_GENDER, user.getGender());
-        values.put(MySqLiteHelper.USER_SCORE, user.getScore());
-        values.put(MySqLiteHelper.USER_BIRTH, user.getBirdthday());
-        database.insert(MySqLiteHelper.TABLE_USER, null, values);
+        values.put(MySQLiteHelper.PERSON_ID, user.getPersonId());
+        values.put(MySQLiteHelper.SERVER_PERSON_ID, user.getServerPersonId());
+        values.put(MySQLiteHelper.USER_NAME, user.getName());
+        values.put(MySQLiteHelper.USER_AGE, user.getAge());
+        values.put(MySQLiteHelper.USER_GENDER, user.getGender());
+        values.put(MySQLiteHelper.USER_SCORE, user.getScore());
+        long i = database.insert(MySQLiteHelper.TABLE_USER, null, values);
         close();
+        return i;
     }
 
-
-    public List<User> getAllUser() {
+    public ArrayList<User> getAllUser() {
         open();
-        database.beginTransaction();
-        List<User> result = new ArrayList<>();
-        Cursor cursor = database.query(MySqLiteHelper.TABLE_USER,
-                allColumns, null, null, null, null, null);
+        ArrayList<User> result = new ArrayList<>();
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_USER,
+                allColumns, null, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Log.d("lgp", "getAllUser: " + cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_BIRTH)) + ":" + cursor.getString(4));
             User user = new User();
             user.setUserId(cursor.getString(0));
             user.setPersonId(cursor.getString(1));
-            user.setName(cursor.getString(2));
-            user.setAge(cursor.getString(3));
-            user.setBirdthday(cursor.getString(4));
-            user.setScore(cursor.getString(5));
+            user.setServerPersonId(cursor.getString(2));
+            user.setName(cursor.getString(3));
+            user.setAge(cursor.getString(4));
+            user.setGender(cursor.getString(5));
+            user.setScore(cursor.getString(6));
             result.add(user);
             cursor.moveToNext();
         }
-        database.endTransaction();
         cursor.close();
         close();
         return result;
     }
 
-    public User getUserByPersonId(String personId) {
+    public User getUserByPersonId(String person_id) {
         open();
         User user = new User();
-        Cursor cursor = database.query(MySqLiteHelper.TABLE_USER,
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_USER,
                 null,
-                "personId = ?",
-                new String[]{personId},
+                "person_id = ?",
+                new String[]{person_id},
                 null, null, null);
         if (cursor.getCount() == 1) {
             cursor.moveToFirst();
-            user.setUserId(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_ID)));
-            user.setPersonId(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.PERSON_ID)));
-            user.setName(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_NAME)));
-            user.setAge(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_AGE)));
-            user.setGender(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_GENDER)));
-            user.setScore(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_SCORE)));
-
+            user.setUserId(cursor.getString(0));
+            user.setPersonId(cursor.getString(1));
+            user.setServerPersonId(cursor.getString(2));
+            user.setName(cursor.getString(3));
+            user.setAge(cursor.getString(4));
+            user.setGender(cursor.getString(5));
+            user.setScore(cursor.getString(6));
         } else {
             user = null;
         }
@@ -108,9 +106,9 @@ public class DataSource {
 
     public boolean checkUserByName(String name) {
         open();
-        Cursor cursor = database.query(MySqLiteHelper.TABLE_USER,
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_USER,
                 null,
-                MySqLiteHelper.USER_NAME + " = ?",
+                MySQLiteHelper.USER_NAME + " = ?",
                 new String[]{name},
                 null, null, null);
         Log.d("lgp", "checkUserByName: "+cursor.getCount());
@@ -129,19 +127,17 @@ public class DataSource {
 
         Log.d("lgp", "getUserByName: name " + name);
         User user = new User();
-        Cursor cursor = database.query(MySqLiteHelper.TABLE_USER,
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_USER,
                 null,
-                MySqLiteHelper.USER_NAME + " = ?",
+                MySQLiteHelper.USER_NAME + " = ?",
                 new String[]{name},
                 null, null, null);
         Log.d("lgp", "getUserByName: " + cursor.getCount());
         if (cursor.getCount() == 1) {
             cursor.moveToFirst();
-            user.setUserId(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_ID)));
-            user.setPersonId(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.PERSON_ID)));
-            user.setName(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_NAME)));
-            user.setBirdthday(cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_BIRTH)));
-            Log.d("lgp", "getUserByName: USER_BIRTH" + cursor.getString(cursor.getColumnIndex(MySqLiteHelper.USER_BIRTH)));
+            user.setUserId(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.USER_ID)));
+            user.setPersonId(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.PERSON_ID)));
+            user.setName(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.USER_NAME)));
         } else {
             user = null;
         }
@@ -154,31 +150,75 @@ public class DataSource {
         int i = 0;
         open();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(MySqLiteHelper.USER_NAME, newName);
-        contentValues.put(MySqLiteHelper.USER_BIRTH, brithday);
-        i = database.update(MySqLiteHelper.TABLE_USER, contentValues, MySqLiteHelper.USER_NAME + "=?", new String[]{oldName});
+        contentValues.put(MySQLiteHelper.USER_NAME, newName);
+        i = database.update(MySQLiteHelper.TABLE_USER, contentValues, MySQLiteHelper.USER_NAME + "=?", new String[]{oldName});
         Log.d("lgp", "upDataByName: " + i);
     }
 
     public void deleteByName(String name) {
         open();
         Log.d("lgp", "deleteByName: "+name);
-        database.delete(MySqLiteHelper.TABLE_USER, MySqLiteHelper.USER_NAME + "=?", new String[]{name});
+        database.delete(MySQLiteHelper.TABLE_USER, MySQLiteHelper.USER_NAME + "=?", new String[]{name});
         close();
     }
+	
+    public User getUserByServerPersonId(String serverPersonId) {
 
-    public void deleteById(String personId) {
         open();
-        database.delete(MySqLiteHelper.TABLE_USER, MySqLiteHelper.PERSON_ID + "=?", new String[]{personId});
+        User user = new User();
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_USER,
+                null,
+                "person_id = ?",
+                new String[]{serverPersonId},
+                null, null, null);
+        if (cursor.getCount() == 1) {
+            cursor.moveToFirst();
+            user.setUserId(cursor.getString(0));
+            user.setPersonId(cursor.getString(1));
+            user.setServerPersonId(cursor.getString(2));
+            user.setName(cursor.getString(3));
+            user.setAge(cursor.getString(4));
+            user.setGender(cursor.getString(5));
+            user.setScore(cursor.getString(6));
+        } else {
+            user = null;
+        }
         close();
+        return user;
+
+    }
+
+    public int deleteById(String personId) {
+        int i = 0;
+        open();
+        i = database.delete(MySQLiteHelper.TABLE_USER, MySQLiteHelper.PERSON_ID + "=?", new String[]{personId});
+        close();
+        return i;
     }
 
     public void clearTable() {
         //执行SQL语句
         open();
-        database.delete(MySqLiteHelper.TABLE_USER, MySqLiteHelper.PERSON_ID + ">?", new String[]{"-1"});
+        database.delete(MySQLiteHelper.TABLE_USER, MySQLiteHelper.PERSON_ID + ">?", new String[]{"-1"});
         close();
-        //        database.execSQL("delete from stu_table where _id  >= 0");
+//        database.execSQL("delete from stu_table where _id  >= 0");
     }
 
+    public boolean deleteAllUser() {
+
+        boolean flag = false;
+
+        try {
+            open();
+            database.execSQL("delete from " + MySQLiteHelper.TABLE_USER);
+            database.execSQL("update sqlite_sequence set seq = 0 where name =  '" + MySQLiteHelper.TABLE_USER + "'");
+            flag = true;
+
+        } catch (SQLException e) {
+            flag = false;
+        }
+
+        close();
+        return flag;
+    }
 }

@@ -1,58 +1,89 @@
 package com.orbbec.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
- *
- * @author mac
- * @date 16/7/4
+ * 用户业务Bean，实现了Parcelable接口
  */
-public class User {
+public class User implements Parcelable {
+
     private String userId;
     private String personId;
     private String name;
     private String age;
+    private String serverPersonId = "server_person_id";
     private String gender;
-    private String  birdthday;
-
-
-    public String getServerPersonId() {
-        return serverPersonId;
-    }
-
-    public void setServerPersonId(String serverPersonId) {
-        this.serverPersonId = serverPersonId;
-    }
-
-    private String serverPersonId = "serverPersonId";
-
-    public String getScore() {
-        return score;
-    }
-
-    public void setScore(String score) {
-        this.score = score;
-    }
-
-    private String score;
+    private String score = "score";
     private String head;
 
-    public User(String personId, String name, String age, String gender,String birdthday) {
+    public User() {
+    }
+
+    public User(String personId, String name, String age, String gender) {
         this.personId = personId;
         this.name = name;
         this.age = age;
         this.gender = gender;
-        this.birdthday = birdthday;
     }
 
-    public User() {
-
+    public User(String userId, String personId, String name, String age, String serverPersonId, String gender, String score, String head) {
+        this.userId = userId;
+        this.personId = personId;
+        this.name = name;
+        this.age = age;
+        this.serverPersonId = serverPersonId;
+        this.gender = gender;
+        this.score = score;
+        this.head = head;
     }
 
-    public String getBirdthday() {
-        return birdthday;
+    protected User(Parcel in) {
+        userId = in.readString();
+        personId = in.readString();
+        name = in.readString();
+        age = in.readString();
+        serverPersonId = in.readString();
+        gender = in.readString();
+        score = in.readString();
+        head = in.readString();
     }
 
-    public void setBirdthday(String birdthday) {
-        this.birdthday = birdthday;
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(userId);
+        parcel.writeString(personId);
+        parcel.writeString(name);
+        parcel.writeString(age);
+        parcel.writeString(serverPersonId);
+        parcel.writeString(gender);
+        parcel.writeString(score);
+        parcel.writeString(head);
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getPersonId() {
@@ -79,6 +110,14 @@ public class User {
         this.age = age;
     }
 
+    public String getServerPersonId() {
+        return serverPersonId;
+    }
+
+    public void setServerPersonId(String serverPersonId) {
+        this.serverPersonId = serverPersonId;
+    }
+
     public String getGender() {
         return gender;
     }
@@ -87,12 +126,12 @@ public class User {
         this.gender = gender;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getScore() {
+        return score;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setScore(String score) {
+        this.score = score;
     }
 
     public String getHead() {
@@ -101,20 +140,5 @@ public class User {
 
     public void setHead(String head) {
         this.head = head;
-    }
-
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", personId='" + personId + '\'' +
-                ", name='" + name + '\'' +
-                ", age='" + age + '\'' +
-                ", gender='" + gender + '\'' +
-                ", serverPersonId='" + serverPersonId + '\'' +
-                ", score='" + score + '\'' +
-                ", head='" + head + '\'' +
-                '}';
     }
 }

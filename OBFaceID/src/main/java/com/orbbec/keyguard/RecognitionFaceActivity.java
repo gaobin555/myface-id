@@ -1,7 +1,6 @@
 package com.orbbec.keyguard;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,30 +11,25 @@ import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.hardware.usb.UsbManager;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.orbbec.NativeNI.OrbbecUtils;
 import com.orbbec.base.BaseApplication;
 import com.orbbec.base.DetectionCallback;
 import com.orbbec.base.DeviceCallback;
@@ -45,7 +39,6 @@ import com.orbbec.utils.AppDef;
 import com.orbbec.utils.GlobalDef;
 import com.orbbec.utils.LogUtil;
 import com.orbbec.utils.OpenNiHelper;
-import com.orbbec.utils.Util;
 import com.orbbec.utils.XmyLog;
 import com.orbbec.view.GlFrameSurface;
 import com.orbbec.view.OpenGlView;
@@ -53,10 +46,6 @@ import com.orbbec.view.OpenGlView;
 import org.openni.SensorType;
 
 import java.nio.ByteBuffer;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static android.os.Build.VERSION_CODES.M;
 import static android.view.View.GONE;
@@ -66,7 +55,7 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
  * 该Demo 作为参考示例，如有问题请联系:springlovvol@163.com
  *
  */
-public class RecognitionFaceActivity extends Activity implements Runnable,
+public class RecognitionFaceActivity extends AppCompatActivity implements Runnable,
         DeviceCallback, DetectionCallback, IdentifyCallback, OrbbecPresenter.View {
 
     private static final boolean IS_SHOW_DEPTH_VIEW = false;
@@ -209,7 +198,7 @@ public class RecognitionFaceActivity extends Activity implements Runnable,
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RecognitionFaceActivity.this, com.orbbec.keyguard.SettingsActivity.class);
+                Intent intent = new Intent(RecognitionFaceActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
         });

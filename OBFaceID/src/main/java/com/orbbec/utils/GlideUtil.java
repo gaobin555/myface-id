@@ -5,7 +5,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.orbbec.app.ExApplication;
+import com.orbbec.base.BaseApplication;
 
 import java.io.File;
 
@@ -18,7 +18,7 @@ import java.io.File;
 
 public class GlideUtil {
     public static void load(int resId, ImageView view) {
-        Glide.with(ExApplication.getContext()).load(resId).placeholder(resId).dontAnimate().into(view);
+        Glide.with(BaseApplication.getContext()).load(resId).placeholder(resId).dontAnimate().into(view);
     }
 
     public static void load(Context context, ImageView v, String path) {

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.orbbec.app.ExApplication;
+import com.orbbec.base.BaseApplication;
 import com.orbbec.keyguard.R;
 import com.orbbec.model.User;
 import com.orbbec.utils.GlideUtil;
@@ -59,7 +59,7 @@ public class UserListAdapter extends RecyclerView.Adapter {
         final User user = data.get(position);
         userListViewHolder.tv_desc.setText("Face ID=" + user.getPersonId() + ", " + user.getName());
         if (!TextUtils.isEmpty(user.getHead())) {
-            GlideUtil.load(ExApplication.getContext(), userListViewHolder.iv_head, user.getHead());
+            GlideUtil.load(BaseApplication.getContext(), userListViewHolder.iv_head, user.getHead());
         }
     }
 

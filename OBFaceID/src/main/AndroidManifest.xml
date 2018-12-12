@@ -47,8 +47,10 @@
         <!--  -->
 
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".FaceRegistActivity"
-            android:theme="@style/FaceRegistTheme"></activity>
+        <activity
+            android:name=".FaceRegistActivity"
+            android:theme="@style/FaceRegistTheme" />
+        <activity android:name=".RegistFromPicActivity"></activity>
     </application>
 
 </manifest>
