@@ -69,7 +69,7 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
 public class RecognitionFaceActivity extends Activity implements Runnable,
         DeviceCallback, DetectionCallback, IdentifyCallback, OrbbecPresenter.View {
 
-    private static final boolean IS_SHOW_DEPTH_VIEW = true;
+    private static final boolean IS_SHOW_DEPTH_VIEW = false;
     private static final boolean DEBUG = false;
     private static final String TAG = "RecognitionFaceActivity";
     private long lastBackTime = 0;
@@ -85,6 +85,7 @@ public class RecognitionFaceActivity extends Activity implements Runnable,
     private AppDef mAppDef = new AppDef();
     private OpenGlView mDepthView;
     private SurfaceView drawView;
+    private Button settingsButton;
 
     /**
      * @param savedInstanceState
@@ -203,7 +204,15 @@ public class RecognitionFaceActivity extends Activity implements Runnable,
         if (!IS_SHOW_DEPTH_VIEW) {
             mDepthView.setVisibility(View.GONE);
         }
-
+        // settings
+        settingsButton = (Button)  findViewById(R.id.SettingsButton);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecognitionFaceActivity.this, com.orbbec.keyguard.SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 

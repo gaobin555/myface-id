@@ -6,6 +6,8 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceView;
+import android.widget.Toast;
+
 import com.lzh.easythread.EasyThread;
 import com.orbbec.NativeNI.OrbbecUtils;
 import com.orbbec.base.DetectionCallback;
@@ -272,8 +274,14 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     public void initFaceTrack() {
         if (mYmFaceTrack == null) {
             mYmFaceTrack = new YMFaceTrack();
-            mYmFaceTrack.initTrack(mContext, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640);
-            mYmFaceTrack.setRecognitionConfidence(75);
+            int result = mYmFaceTrack.initTrack(mContext, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640);
+            if (result == 0){
+                mYmFaceTrack.setRecognitionConfidence(75);
+                Log.i(TAG, "initTrack初始化检测器成功 + facedb size: " + mYmFaceTrack.getEnrolledPersonIds().size());
+            } else {
+                Log.e(TAG, "initTrack初始化检测器失败: " + result);
+            }
+
         }
     }
 
@@ -819,8 +827,8 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
         }
         // 单纯为了判断活体检测的显示（人脸跟踪框）
         if (needToCheckLiveness(identifyPerson, mCurrentUserName, happy)) {
-//            isLiveness = mYmFaceTrack.ObIsLiveness(mColorBuffer.array(), mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());
-            isLiveness = mYmFaceTrack.ObIsLiveness(mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());// Gavin:使用新的jar包编译报错
+            isLiveness = mYmFaceTrack.ObIsLiveness(mColorBuffer.array(), mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());
+//            isLiveness = mYmFaceTrack.ObIsLiveness(mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());// Gavin:使用新的jar包编译报错
             updateLivenessStatus(isLiveness);
         }
 

@@ -7,6 +7,14 @@
     <string name="liveness_check_fail">非活体</string>
     <string name="liveness_check_success">活体检测通过</string>
     <string name="sign_out">再按一次返回键退出应用</string>
+    <string name="settings">设置</string>
+    <string name="face_recognition">人脸注册</string>
+    <string name="face_setting">参数设置</string>
+    <string name="face_regist">人脸注册</string>
+    <string name="insert_cam">拍照录入</string>
+    <string name="insert_vid">视频录入</string>
+    <string name="insert_pic">照片录入</string>
+    <string name="insert_delete">全部删除</string>
 
 
 </resources>

@@ -23,7 +23,8 @@
             android:id="@+id/gl_surface"
             android:layout_width="@dimen/color_width"
             android:layout_height="@dimen/color_height"
-            android:layout_gravity="center" />
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center|top" />
 
         <!-- 人脸框 -->
         <SurfaceView
@@ -46,12 +47,13 @@
 
 
     <Button
+        android:id="@+id/SettingsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_40"
         android:layout_gravity="bottom|right"
         android:layout_marginRight="@dimen/dimen_40"
-        android:visibility="gone"
+        android:text="@string/settings"
         />
 
 
@@ -66,7 +68,7 @@
             android:layout_margin="@dimen/dimen_25"
             android:layout_width="@dimen/dimen_320"
             android:layout_height="@dimen/dimen_240"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </LinearLayout>
     <LinearLayout
@@ -81,6 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/voice_right"
+            android:text="测试版本"
             />
     </LinearLayout>
 

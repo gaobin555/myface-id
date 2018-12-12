@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.orbbec.keyguard.Settings">
+
+    <TextView
+        android:id="@+id/face_regist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/selector_activity_main_textview"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="5dp"
+        android:text="@string/face_regist"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/face_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_activity_main_textview"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="5dp"
+        android:text="@string/face_setting"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+</LinearLayout>
