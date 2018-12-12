@@ -85,17 +85,17 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
         setContentView(R.layout.activity_recognition_face);
         initView();
 
-        if (Build.VERSION.SDK_INT >= M) {
-            if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    | ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 0);
-            } else if (checkPermission()) {
-                openInit();
-            }
-        } else {
-            openInit();
-        }
+//        if (Build.VERSION.SDK_INT >= M) {
+//            if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+//                    | ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+//                    != PackageManager.PERMISSION_GRANTED) {
+//                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 0);
+//            } else if (checkPermission()) {
+//                openInit();
+//            }
+//        } else {
+//            openInit();
+//        }
     }
 
     @Override
@@ -337,6 +337,19 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     @Override
     protected void onResume() {
         super.onResume();
+        // Gavin：移到onResume初始化
+        if (Build.VERSION.SDK_INT >= M) {
+            if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    | ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 0);
+            } else if (checkPermission()) {
+                openInit();
+            }
+        } else {
+            openInit();
+        }
+
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_IMMERSIVE;
         decorView.setSystemUiVisibility(uiOptions);
@@ -370,18 +383,27 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
             mDepthView.onPause();
         }
 
-        if (Build.VERSION.SDK_INT >= M) {
-            // 插拔USB摄像头后需要重新申请权限，在权限框打开的时候会调用这个onPause()方法，若此时执行下面方法的话会造成深度图打不开的情况
-            if (checkPermission()) {
-
-                if (mPresenter != null && mObDataSource != null && (System.currentTimeMillis() - resumeTime > GlobalDef.NUMBER_20)) {
-                    mPresenter.stopFaceTrack();
-                    mObDataSource.onRelease();
-                    releaseOBFacePresenter();
-                    Log.d(TAG, "onPause 释放");
-                }
-            }
+        // Gavin:在onPause釋放
+        if (mPresenter != null && mObDataSource != null) {
+            mPresenter.stopFaceTrack();
+            mObDataSource.onRelease();
+            mPresenter = null;
+            releaseOBFacePresenter();
+            LogUtil.d("释放");
         }
+
+//        if (Build.VERSION.SDK_INT >= M) {
+//            // 插拔USB摄像头后需要重新申请权限，在权限框打开的时候会调用这个onPause()方法，若此时执行下面方法的话会造成深度图打不开的情况
+//            if (checkPermission()) {
+//
+//                if (mPresenter != null && mObDataSource != null && (System.currentTimeMillis() - resumeTime > GlobalDef.NUMBER_20)) {
+//                    mPresenter.stopFaceTrack();
+//                    mObDataSource.onRelease();
+//                    releaseOBFacePresenter();
+//                    Log.d(TAG, "onPause 释放");
+//                }
+//            }
+//        }
     }
 
 

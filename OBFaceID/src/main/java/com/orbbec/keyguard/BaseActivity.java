@@ -29,17 +29,17 @@ public abstract class BaseActivity extends AppCompatActivity {
 //            mWorkerHandler = HandlerThreadHandler.createHandler(TAG);
 //            mWorkerThreadID = mWorkerHandler.getLooper().getThread().getId();
 //        }
-//        initData();
-//        initView();
-//        initEvent();
+        initData();
+        initView();
+        initEvent();
 
     }
 
-//    abstract void initData();
-//
-//    abstract void initView();
-//
-//    abstract void initEvent();
+    abstract void initData();
+
+    abstract void initView();
+
+    abstract void initEvent();
 
     /**
      * 显示ShortToast

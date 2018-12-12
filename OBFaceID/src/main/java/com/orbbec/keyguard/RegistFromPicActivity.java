@@ -40,9 +40,6 @@ public class RegistFromPicActivity extends NoCameraActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //setContentView(R.layout.activity_regist_from_pic);
         super.onCreate(savedInstanceState);
-        initData();
-        initView();
-        initEvent();
     }
 
     @Override
@@ -55,10 +52,11 @@ public class RegistFromPicActivity extends NoCameraActivity {
         super.onStop();
     }
 
+    @Override
     void initData() {
         imagePicker = ImagePicker.getInstance();
         imagePicker.setImageLoader(new GlideImageLoader());   //设置图片加载器
-        imagePicker.setShowCamera(true);  //显示拍照按钮
+        imagePicker.setShowCamera(false);  //显示拍照按钮
         imagePicker.setCrop(true);        //允许裁剪（单选才有效）
         imagePicker.setSaveRectangle(true); //是否按矩形区域保存
         imagePicker.setSelectLimit(1);    //选中数量限制
@@ -69,10 +67,12 @@ public class RegistFromPicActivity extends NoCameraActivity {
         imagePicker.setOutPutY(1000);//保存文件的高度。单位像素
     }
 
+    @Override
     void initView() {
 
     }
 
+    @Override
     void initEvent() {
         Intent intent = new Intent(this, ImageGridActivity.class);
         startActivityForResult(intent, IMAGE_PICKER);

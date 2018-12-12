@@ -4,12 +4,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.orbbec.adapter.OnItemClickListener;
 import com.orbbec.adapter.UserListAdapter;
@@ -33,12 +31,8 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_regist);
-
-        initData();
-        initView();
-        initEvent();
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -51,26 +45,24 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
         super.onStop();
     }
 
-//    @Override
+    @Override
     void initData() {
         userList = UserDataUtil.updateDataSource();
         adapter = new UserListAdapter(userList);
     }
 
-//    @Override
+    @Override
     void initView() {
         ll_insert_cam = (LinearLayout) findViewById(R.id.ll_insert_cam);
         ll_insert_vid = (LinearLayout) findViewById(R.id.ll_insert_vid);
         ll_insert_pic = (LinearLayout) findViewById(R.id.ll_insert_pic);
         ll_insert_delete = (LinearLayout) findViewById(R.id.ll_insert_delete);
         rcv_head = (RecyclerView) findViewById(R.id.rcv_head);
-//        LinearLayoutManager linearLayout = new LinearLayoutManager(this);
-//        rcv_head.setLayoutManager(linearLayout);
         rcv_head.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rcv_head.setAdapter(adapter);
     }
 
-//    @Override
+    @Override
     void initEvent() {
         ll_insert_cam.setOnClickListener(this);
         ll_insert_vid.setOnClickListener(this);

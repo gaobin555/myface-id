@@ -17,6 +17,7 @@ import com.orbbec.base.IdentifyCallback;
 import com.orbbec.base.ObSource;
 import com.orbbec.base.OrbbecPresenter;
 import com.orbbec.base.RegisterCallback;
+import com.orbbec.constant.Constant;
 import com.orbbec.model.User;
 import com.orbbec.utils.DataSource;
 import com.orbbec.utils.FpsMeter;
@@ -37,6 +38,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import mobile.ReadFace.YMFace;
 import mobile.ReadFace.YMFaceTrack;
+
+import static com.orbbec.constant.Constant.FeatureDatabasePath;
 import static com.orbbec.keyguard.BaseFacePresenter.Distance.MEASURE_DISTANCE_IS_OK;
 import static com.orbbec.keyguard.BaseFacePresenter.Distance.MEASURE_DISTANCE_TOO_CLOSE;
 import static com.orbbec.keyguard.BaseFacePresenter.Distance.MEASURE_DISTANCE_TOO_FAR;
@@ -274,7 +277,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     public void initFaceTrack() {
         if (mYmFaceTrack == null) {
             mYmFaceTrack = new YMFaceTrack();
-            int result = mYmFaceTrack.initTrack(mContext, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640);
+            int result = mYmFaceTrack.initTrack(mContext, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640, Constant.FeatureDatabasePath);
             if (result == 0){
                 mYmFaceTrack.setRecognitionConfidence(75);
                 Log.i(TAG, "initTrack初始化检测器成功 + facedb size: " + mYmFaceTrack.getEnrolledPersonIds().size());
