@@ -23,6 +23,7 @@ import java.util.Map;
 import dou.utils.DisplayUtil;
 import mobile.ReadFace.YMFace;
 import static com.orbbec.base.BaseApplication.getAppContext;
+import static com.orbbec.keyguard.BaseFacePresenter.IDENTIFY_PERSON_CHECK_SUCCESS;
 import static com.orbbec.keyguard.BaseFacePresenter.LIVENESS_STATUS_CHECK_FAIL;
 import static com.orbbec.keyguard.BaseFacePresenter.LIVENESS_STATUS_CHECK_INVALID;
 import static com.orbbec.keyguard.BaseFacePresenter.LIVENESS_STATUS_CHECK_SUCCESS;
@@ -224,7 +225,11 @@ public class DrawUtil {
                         } else if (livenessStatus == LIVENESS_STATUS_CHECK_INVALID) {
                             checktStatus = getAppContext().getString(R.string.liveness_check_invalid);
                             paint.setColor(Color.WHITE);
-                        } else {
+                        } else if (livenessStatus == IDENTIFY_PERSON_CHECK_SUCCESS) {
+                            checktStatus = getAppContext().getString(R.string.identify_success);
+                            paint.setColor(Color.GREEN);
+                        }
+                        else {
                             //                            checktStatus = "";  // 检测中
                         }
                         if (checktStatus != null) {

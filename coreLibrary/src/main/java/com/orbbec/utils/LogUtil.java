@@ -7,7 +7,7 @@ import android.util.Log;
  * @author lgp
  */
 public class LogUtil {
-    private static final String TAG = "Test_lgp";
+    private static final String TAG = "gaobin";
     public static boolean isOpen = true;
 
     private LogUtil() {
@@ -34,6 +34,12 @@ public class LogUtil {
     public static void e(String msg) {
         if (isOpen) {
             Log.e(TAG, msg);
+        }
+    }
+
+    public static void w(String msg) {
+        if (isOpen) {
+            Log.w(TAG, msg);
         }
     }
 

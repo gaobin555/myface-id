@@ -12,6 +12,7 @@ import com.orbbec.base.ObSource;
 import com.orbbec.base.OrbbecPresenter;
 import com.orbbec.utils.FpsMeter;
 import com.orbbec.utils.GlobalDef;
+import com.orbbec.utils.LogUtil;
 import com.orbbec.utils.OpenNiHelper;
 import com.orbbec.view.GlFrameSurface;
 import com.orbbec.view.UvcSurfaceView;
@@ -121,11 +122,13 @@ public class ObDataSource implements ObSource {
         if (IS_UVC) {
             if (mCamera != null) {
                 mCamera.startPreview();
+                LogUtil.d(TAG + " startColor:IS_UVC mCamera.startPreview()");
             }
         } else {
             if (mColorStream != null) {
                 mColorStream.start();
                 mColorStreams.add(mColorStream);
+                LogUtil.d(TAG + " startColor:!IS_UVC mColorStreams.start()");
             }
         }
     }
@@ -142,10 +145,12 @@ public class ObDataSource implements ObSource {
     public void stopColor() {
         if (IS_UVC) {
             mCamera.stopPreview();
+            LogUtil.d(TAG + "startColor:IS_UVC mCamera.stopPreview()");
         } else {
             if (mColorStream != null) {
                 mColorStreams.remove(mColorStream);
                 mColorStream.stop();
+                LogUtil.d(TAG + "startColor:!IS_UVC mColorStreams.stop()");
             }
         }
     }

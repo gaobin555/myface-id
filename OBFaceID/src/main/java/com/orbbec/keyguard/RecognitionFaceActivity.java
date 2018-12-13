@@ -15,6 +15,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +27,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -75,6 +78,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     private OpenGlView mDepthView;
     private SurfaceView drawView;
     private Button settingsButton;
+    private Button openGate;
 
     /**
      * @param savedInstanceState
@@ -176,13 +180,16 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     private void initView() {
         mGLSurface = (GlFrameSurface) findViewById(R.id.gl_surface);
         if (ObDataSource.isDouDou(this)) {
+            LogUtil.d(TAG+"ObDataSource.isDouDou");
             mGLSurface.setFrameWidth(GlobalDef.RES_DUODUO_DEPTH_WIDTH);
             mGLSurface.setFrameHeight(GlobalDef.RES_DUODUO_DEPTH_HEIGHT);
         } else {
             mGLSurface.setFrameWidth(mAppDef.getColorWidth());
             mGLSurface.setFrameHeight(mAppDef.getColorHeight());
+            LogUtil.d(TAG+" Width = " + mAppDef.getColorWidth() + "  Height = " + mAppDef.getColorHeight());
         }
         if (ObDataSource.isUVC(this)) {
+            LogUtil.d(TAG+"ObDataSource.isUVC");
             mGLSurface.changeRotation(0, true);
         }
         drawView = (SurfaceView) findViewById(R.id.pointView);
@@ -195,11 +202,19 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
         }
         // settings
         settingsButton = (Button)  findViewById(R.id.SettingsButton);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
+        settingsButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(RecognitionFaceActivity.this, SettingsActivity.class);
                 startActivity(intent);
+            }
+        });
+        // 开门指令
+        openGate = (Button) findViewById(R.id.SendButton);
+        openGate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.openTheGate();
             }
         });
     }

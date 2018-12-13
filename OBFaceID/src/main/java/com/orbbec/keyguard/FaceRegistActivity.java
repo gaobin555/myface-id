@@ -14,11 +14,14 @@ import com.orbbec.adapter.UserListAdapter;
 import com.orbbec.base.BaseApplication;
 import com.orbbec.model.User;
 import com.orbbec.utils.DataSource;
+import com.orbbec.utils.LogUtil;
 import com.orbbec.utils.UserDataUtil;
 
 import java.util.ArrayList;
 
 public class FaceRegistActivity extends NoCameraActivity implements View.OnClickListener, OnItemClickListener {
+
+    private static final String TAG = "FaceRegistActivity";
 
     private RecyclerView rcv_head;
     private UserListAdapter adapter = null;
@@ -48,6 +51,7 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
     @Override
     void initData() {
         userList = UserDataUtil.updateDataSource();
+        LogUtil.i(TAG + " initData userList length = " + userList.size());
         adapter = new UserListAdapter(userList);
     }
 
@@ -58,7 +62,7 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
         ll_insert_pic = (LinearLayout) findViewById(R.id.ll_insert_pic);
         ll_insert_delete = (LinearLayout) findViewById(R.id.ll_insert_delete);
         rcv_head = (RecyclerView) findViewById(R.id.rcv_head);
-        rcv_head.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rcv_head.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rcv_head.setAdapter(adapter);
     }
 
@@ -140,6 +144,7 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
             //刷新一次
             long time = System.currentTimeMillis();
             userList = UserDataUtil.updateDataSource();
+            LogUtil.i(TAG + " onActivityResult userList length = " + userList.size());
             adapter.updateData(userList);
         }
     }

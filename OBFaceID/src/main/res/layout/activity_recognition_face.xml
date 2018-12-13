@@ -45,6 +45,14 @@
         android:textColor="@color/colorText5"
         android:textSize="@dimen/recognition_tip_size" />
 
+    <Button
+        android:id="@+id/SendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_40"
+        android:layout_gravity="bottom|left"
+        android:layout_marginRight="@dimen/dimen_40"
+        android:text="@string/open"/>
 
     <Button
         android:id="@+id/SettingsButton"

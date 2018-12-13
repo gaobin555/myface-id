@@ -22,19 +22,19 @@ import com.orbbec.model.User;
 import com.orbbec.utils.DataSource;
 import com.orbbec.utils.FpsMeter;
 import com.orbbec.utils.GlobalDef;
+import com.orbbec.utils.LogUtil;
 import com.orbbec.utils.TrackUtil;
 import com.orbbec.utils.XmyLog;
 import com.orbbec.view.GlFrameSurface;
 import org.openni.SensorType;
-import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import mobile.ReadFace.YMFace;
 import mobile.ReadFace.YMFaceTrack;
@@ -43,6 +43,7 @@ import static com.orbbec.constant.Constant.FeatureDatabasePath;
 import static com.orbbec.keyguard.BaseFacePresenter.Distance.MEASURE_DISTANCE_IS_OK;
 import static com.orbbec.keyguard.BaseFacePresenter.Distance.MEASURE_DISTANCE_TOO_CLOSE;
 import static com.orbbec.keyguard.BaseFacePresenter.Distance.MEASURE_DISTANCE_TOO_FAR;
+import static dou.utils.HandleUtil.runOnUiThread;
 
 /**
  * @author lgp
@@ -55,6 +56,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     public static final int LIVENESS_STATUS_CHECK_SUCCESS = 1;
     public static final int LIVENESS_STATUS_CHECK_FAIL = 2;
     public static final int LIVENESS_STATUS_CHECK_INVALID = -1;
+    public static final int IDENTIFY_PERSON_CHECK_SUCCESS = 3; // ADD 人脸识别成功
 
     private static final boolean DEBUG = false;
     private final DataSource mDBSource;
@@ -139,7 +141,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
     private float mColorViewWidth;
     private float mColorViewHeight;
-    private int identifyPerson;
+    private int identifyPerson = -111;
     boolean isLiveness;
     private int livenessFailCount = 0;
     private int livenessCount = 0;
@@ -153,6 +155,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     private String mCurrentUserName = "";
     private int livenessStatus;
     private EasyThread easyThread = null;
+//    private EasyThread easyThread2 = null;
 
 
     /**
@@ -172,6 +175,16 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
      * @return
      */
     public abstract boolean needToCheckLiveness(int identifyPerson, String nameFromPersonId, int happy);
+
+    /**
+     *  获取用户姓名
+     */
+    public abstract String getNameFromPersonId(int personId);
+
+    /**
+     *  开门
+     */
+    public abstract void openTheGate();
 
     /**
      * 检测人脸对边框的间隔，避免半张脸录入的情况
@@ -224,6 +237,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
         mDBSource = new DataSource(context);
         easyThread = EasyThread.Builder.createFixed(6).build();
+//        easyThread2 = EasyThread.Builder.createFixed(6).build();
     }
 
     @Override
@@ -250,9 +264,9 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
         mDetectReferVideoSize.bottom = (int) (mDetectReferColorView.bottom * mColorHeight / mColorViewHeight);
 
         Rect r = mDetectReferColorView;
-        Log.e(TAG, "xxx mDetectReferColorView = " + r + ", (" + r.width() + " * " + r.height() + ")");
+        LogUtil.e(TAG+" xxx mDetectReferColorView = " + r + ", (" + r.width() + " * " + r.height() + ")");
         r = mDetectReferVideoSize;
-        Log.w(TAG, "xxx mDetectReferVideoSize = " + r + ", (" + r.width() + " * " + r.height() + ")");
+        LogUtil.w(TAG+" xxx mDetectReferVideoSize = " + r + ", (" + r.width() + " * " + r.height() + ")");
 
         cropX = mDetectReferVideoSize.left;
         cropY = mDetectReferVideoSize.top;
@@ -280,13 +294,43 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
             int result = mYmFaceTrack.initTrack(mContext, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640, Constant.FeatureDatabasePath);
             if (result == 0){
                 mYmFaceTrack.setRecognitionConfidence(75);
-                Log.i(TAG, "initTrack初始化检测器成功 + facedb size: " + mYmFaceTrack.getEnrolledPersonIds().size());
+                LogUtil.i(TAG+" initTrack初始化检测器成功 + facedb size: " + mYmFaceTrack.getEnrolledPersonIds().size());
             } else {
-                Log.e(TAG, "initTrack初始化检测器失败: " + result);
+                LogUtil.e(TAG + " initTrack初始化检测器失败: " + result);
             }
 
         }
     }
+
+    /**
+     *  启动线程监听人脸匹配
+     */
+//    public void startOpenGateThread() {
+//        LogUtil.d("开启监听开门");
+//        easyThread2.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(!mFaceTrackExit) {
+//                    synchronized (facesLock) {
+//                        LogUtil.d("startOpenGateThread identifyPerson = " + identifyPerson);
+//                        if (identifyPerson > 0) {
+//                            openTheGate();
+//                        }
+//                        sleepTime(20);
+//                    }
+//                }
+//            }
+//        });
+//    }
+
+//    public void stopOpenGateThread() {
+//        try {
+//            easyThread2.getExecutor().awaitTermination(GlobalDef.PRO_MIX_DISTANCE, TimeUnit.MILLISECONDS);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        easyThread2.getExecutor().shutdownNow();
+//    }
 
     @Override
     public void startFaceTrack() {
@@ -308,7 +352,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                     }
                     if (mYmFaceTrack == null) {
                         if (DEBUG) {
-                            Log.i(TAG, "mYmFaceTrack = null");
+                            LogUtil.i(TAG+ " mYmFaceTrack = null");
                         }
                         sleepTime(20);
                         continue;
@@ -349,6 +393,17 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                         }
                         mCurrentUser = null;
                         identification(ymFaceList);
+
+                        runOnUiThread(new Runnable(){
+                            @Override
+                            public void run() {
+                                //更新UI
+                                LogUtil.d("runOnUiThread identifyPerson = " + identifyPerson);
+                                if (identifyPerson > 0) {
+                                    openTheGate();
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -358,9 +413,9 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     @Override
     public void stopFaceTrack() {
 
-        Log.e(TAG, "stopFaceTrack() ...");
+        LogUtil.e(TAG + " stopFaceTrack() ...");
         if (mFaceTrackExit) {
-            Log.e(TAG, "mFaceTrackExit = true");
+            LogUtil.e(TAG + "mFaceTrackExit = true");
             return;
         }
 
@@ -536,7 +591,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
         showDepthFpsToUI(fpsMeter1.getFps());
 
         if (mDepthBuffer == null) {
-            Log.e(TAG, "xxx getFaceTrack = (" + cropX + ", " + cropY + "), " + getFaceTrackWidth() + " * " + getFaceTrackHeight());
+            LogUtil.e(TAG + " xxx getFaceTrack = (" + cropX + ", " + cropY + "), " + getFaceTrackWidth() + " * " + getFaceTrackHeight());
 
             /** TODO: 这里得到的getFaceTrackWidth其实还是视频宽度，因为  {@link this#setIdentificationRect(Rect)} 还没有被调用 */
             mDepthBuffer = ByteBuffer.allocateDirect(getFaceTrackWidth() * getFaceTrackHeight() * 2);
@@ -570,19 +625,21 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     public void onFaceTrack() {
 
         if (mFaceTrackExit) {
+            LogUtil.d(TAG + " mFaceTrackExit");
             return;
         }
         if (!isBufferready) {
+            LogUtil.d(TAG + " !isBufferready");
             return;
         }
         if (mYmFaceTrack == null) {
-            if (DEBUG) {
+           // if (DEBUG) {
                 XmyLog.i("mYmFaceTrack = null");
-            }
+           // }
             return;
         }
         if (mDetectReferColorView == null) {
-            Log.e(TAG, TAG + "#setIdentificationRect(Rect) 检测范围未设置");
+            LogUtil.e(TAG + "#setIdentificationRect(Rect) 检测范围未设置");
             return;
         }
 
@@ -590,6 +647,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
             /* FixMe: 这步很快，可以跟踪到人脸的位置、关键点、角度、trackid */
             mYMFaceList = mYmFaceTrack.trackMulti(tempColorBuffer.array(), getFaceTrackWidth(), getFaceTrackHeight());
+           // LogUtil.d(TAG + " mYMFaceList.size() = " + mYMFaceList.size());
 
             if (mYMFaceList != null && mYMFaceList.size() > 0) {
 
@@ -622,7 +680,8 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
         }
 
         float scanle = (float) 1.3;
-        drawFaceTrack(mYMFaceList, (mDataSource.isUVC() ? true : false), scanle, mColorWidth, mCurrentUserName, age, happystr, livenessStatus, mCurrentDistance);
+        drawFaceTrack(mYMFaceList, (mDataSource.isUVC() ? true : false), scanle, mColorWidth,
+                mCurrentUserName, age, happystr, livenessStatus, mCurrentDistance);
     }
 
     /**
@@ -644,7 +703,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
         }
 
         if (faceIndex >= 0 && faceIndex != lastRecognitionFaceIndex) {
-            Log.e(TAG, "onFaceTrack: checkFace... change face");
+            LogUtil.e(TAG+" onFaceTrack: checkFace... change face");
             mCurrentUserName = "";
             lastRecognitionFaceIndex = faceIndex;
             livenessCount = 0;
@@ -757,11 +816,13 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
             } else {
                 if (mDetectionCallback != null) {
                     mDetectionCallback.onNoFace();
+                    identifyPerson = -111;
                 }
             }
         } else {
             if (mDetectionCallback != null) {
                 mDetectionCallback.onNoFace();
+                identifyPerson = -111;
             }
         }
     }
@@ -828,11 +889,16 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
         if (happy < GlobalDef.FACE_HAPPEY) {
             happystr = "平静";
         }
+
         // 单纯为了判断活体检测的显示（人脸跟踪框）
         if (needToCheckLiveness(identifyPerson, mCurrentUserName, happy)) {
             isLiveness = mYmFaceTrack.ObIsLiveness(mColorBuffer.array(), mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());
+            // 人脸识别
+            identifyPerson = mYmFaceTrack.identifyPerson(faceIndex);
+            mCurrentUserName = getNameFromPersonId(identifyPerson);
+            Log.i("gaobin", "identifyPerson = " + identifyPerson);
 //            isLiveness = mYmFaceTrack.ObIsLiveness(mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());// Gavin:使用新的jar包编译报错
-            updateLivenessStatus(isLiveness);
+            updateLivenessStatus(isLiveness, identifyPerson);
         }
 
         if (faceIndex != lastRecognitionFaceIndex) {
@@ -856,7 +922,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
      *
      * @param isLiveness
      */
-    private void updateLivenessStatus(boolean isLiveness) {
+    private void updateLivenessStatus(boolean isLiveness, int identifyPerson) {
 
         tooFarOrCloseCount = 0;
         if (!isLiveness) {
@@ -871,8 +937,16 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
             if (livenessCount < GlobalDef.NUMBER_3) {
                 livenessCount++;
             } else {
-                livenessStatus = LIVENESS_STATUS_CHECK_SUCCESS;
+                if (identifyPerson > 0) {
+                    livenessStatus = IDENTIFY_PERSON_CHECK_SUCCESS;
+                } else {
+                    livenessStatus = LIVENESS_STATUS_CHECK_SUCCESS;
+                }
             }
+        }
+
+        if (identifyPerson > 0) {
+            livenessStatus = IDENTIFY_PERSON_CHECK_SUCCESS;
         }
     }
 
@@ -885,7 +959,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     private Distance measureDistance(Rect rect, ByteBuffer depthBuffer) {
 
         if (DEBUG) {
-            XmyLog.d("measureDistance() called with: rect = [" + rect + "]");
+            XmyLog.d(TAG + "measureDistance() called with: rect = [" + rect + "]");
         }
 
         int rectWidth = 6;
@@ -973,7 +1047,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
     private void log(String str) {
         if (DEBUG) {
-            Log.i(TAG, str);
+            LogUtil.i(TAG + " " + str);
         }
     }
 

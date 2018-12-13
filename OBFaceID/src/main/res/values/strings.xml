@@ -15,6 +15,9 @@
     <string name="insert_vid">视频录入</string>
     <string name="insert_pic">照片录入</string>
     <string name="insert_delete">全部删除</string>
+    <string name="send">发送指令</string>
+    <string name="identify_success">用户匹配通过</string>
+    <string name="open">开门</string>
 
 
 </resources>

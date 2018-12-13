@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.facebook.stetho.common.LogUtil;
 import com.orbbec.keyguard.RgbCamera;
 
 import java.nio.ByteBuffer;
@@ -17,7 +18,7 @@ public class GlFrameSurface extends GLSurfaceView{
     private CmGlRenderer mGLFRenderer;
 
     private static final String TAG = "GLFrameSurface";
-    private static final boolean DEGUG = false;
+    private static final boolean DEGUG = true;
 
     private int mFrameWidth;
     private int mFrameHeight;
@@ -119,7 +120,7 @@ public class GlFrameSurface extends GLSurfaceView{
 
     private void log(String str){
         if (DEGUG){
-            Log.w(TAG, str);
+            LogUtil.w(TAG+str);
         }
     }
 }

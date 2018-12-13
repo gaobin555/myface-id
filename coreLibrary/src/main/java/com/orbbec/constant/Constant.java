@@ -10,6 +10,10 @@ public class Constant {
     public static final String FeatureDatabasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/faceid_recognition_db";
     public static final String UserDatabasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/faceid_user_db/";
 
+    public  static String PORT = "ttyS4";//串口号
+    public  static  int BAUDRATE = 9600;//波特率
+    public  static  String OPENGATE = "AA00010200000800000000000000000B"; // 開門指令
+
     static {
         File file = new File(Constant.UserDatabasePath);
         if (!file.exists()) {

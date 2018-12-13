@@ -6,14 +6,18 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.orbbec.constant.Constant;
 import com.orbbec.model.User;
 import com.orbbec.utils.AppDef;
 import com.orbbec.utils.DataSource;
 import com.orbbec.utils.DrawUtil;
 import com.orbbec.utils.GlobalDef;
+import com.orbbec.utils.SerialPortHelper;
+import com.orbbec.utils.UserDataUtil;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import mobile.ReadFace.YMFace;
 
@@ -29,10 +33,18 @@ public class ObFacePresenter extends BaseFacePresenter {
     private int mVideoViewWidth;
     private int mVideoViewHeitht;
 
+    // 读取用户数
+    private Map<Integer, User> userMap;
+
+    private SerialPortHelper serialPortHelper;
+
     private GlobalDef mDef = new AppDef();
 
     public ObFacePresenter(Context context) {
         super(context, context.getResources().getDimension(R.dimen.color_width), context.getResources().getDimension(R.dimen.color_height), new AppDef());
+        userMap = UserDataUtil.updateDataSource(true);
+        serialPortHelper = new SerialPortHelper();
+        serialPortHelper.initSerial();
     }
 
     public void setFaceTrackDrawView(SurfaceView frameSurfaceView) {
@@ -48,6 +60,29 @@ public class ObFacePresenter extends BaseFacePresenter {
     @Override
     public boolean needToMeasureDistance(){
         return true;
+    }
+
+    /**
+     * 获取用户姓名
+     * @param personId
+     * @return
+     */
+    @Override
+    public String getNameFromPersonId(int personId) {
+        if (userMap.containsKey(personId)){
+            User user = userMap.get(personId);
+            return user.getName();
+        } else {
+            return "非用户";
+        }
+    }
+
+    /**
+     *  打开闸机门
+     */
+    @Override
+    public void openTheGate() {
+        serialPortHelper.sendOpenGate(Constant.OPENGATE);
     }
 
     /**
