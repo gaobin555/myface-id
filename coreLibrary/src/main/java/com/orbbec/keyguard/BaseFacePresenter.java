@@ -142,6 +142,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     private float mColorViewWidth;
     private float mColorViewHeight;
     private int identifyPerson = -111;
+    private boolean isSendOpenGate = false;
     boolean isLiveness;
     private int livenessFailCount = 0;
     private int livenessCount = 0;
@@ -394,13 +395,15 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                         mCurrentUser = null;
                         identification(ymFaceList);
 
+                        // 到UI线程发送开门命令
                         runOnUiThread(new Runnable(){
                             @Override
                             public void run() {
                                 //更新UI
                                 LogUtil.d("runOnUiThread identifyPerson = " + identifyPerson);
-                                if (identifyPerson > 0) {
+                                if (identifyPerson > 0 && !isSendOpenGate) {
                                     openTheGate();
+                                    isSendOpenGate = true;
                                 }
                             }
                         });
@@ -817,12 +820,14 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                 if (mDetectionCallback != null) {
                     mDetectionCallback.onNoFace();
                     identifyPerson = -111;
+                    isSendOpenGate = false;
                 }
             }
         } else {
             if (mDetectionCallback != null) {
                 mDetectionCallback.onNoFace();
                 identifyPerson = -111;
+                isSendOpenGate = false;
             }
         }
     }
