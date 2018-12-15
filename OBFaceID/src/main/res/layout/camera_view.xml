@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@android:color/black"
+    android:gravity="center">
+
+    <com.orbbec.view.GlFrameSurface
+        android:id="@+id/sfv_gl_surface"
+        android:layout_width="@dimen/color_width"
+        android:layout_height="@dimen/color_height"
+        android:layout_marginTop="@dimen/dimen_40"
+        android:layout_gravity="center|top" />
+
+    <SurfaceView
+        android:id="@+id/sfv_draw_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null" />
+
+</FrameLayout>

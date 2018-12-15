@@ -50,7 +50,8 @@
         <activity
             android:name=".FaceRegistActivity"
             android:theme="@style/FaceRegistTheme" />
-        <activity android:name=".RegistFromPicActivity"></activity>
+        <activity android:name=".RegistFromPicActivity" />
+        <activity android:name=".RegistFromCamAcitvity"></activity>
     </application>
 
 </manifest>

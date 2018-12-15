@@ -65,7 +65,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     private DetectionCallback mDetectionCallback;
     private RegisterCallback mRegisterCallback;
     private IdentifyCallback mIdentifyCallback;
-    private YMFaceTrack mYmFaceTrack;
+    protected YMFaceTrack mYmFaceTrack;
     private boolean mFaceTrackExit = false;
 
     private int mColorWidth;
@@ -188,6 +188,12 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     public abstract void openTheGate();
 
     /**
+     * 判断是否需要录入
+     * @return
+     */
+    public abstract boolean needToRegist();
+
+    /**
      * 检测人脸对边框的间隔，避免半张脸录入的情况
      * 也避免深度图不全判断为太远或者太近或非活体的情况
      *
@@ -303,35 +309,6 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
         }
     }
 
-    /**
-     *  启动线程监听人脸匹配
-     */
-//    public void startOpenGateThread() {
-//        LogUtil.d("开启监听开门");
-//        easyThread2.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                while(!mFaceTrackExit) {
-//                    synchronized (facesLock) {
-//                        LogUtil.d("startOpenGateThread identifyPerson = " + identifyPerson);
-//                        if (identifyPerson > 0) {
-//                            openTheGate();
-//                        }
-//                        sleepTime(20);
-//                    }
-//                }
-//            }
-//        });
-//    }
-
-//    public void stopOpenGateThread() {
-//        try {
-//            easyThread2.getExecutor().awaitTermination(GlobalDef.PRO_MIX_DISTANCE, TimeUnit.MILLISECONDS);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        easyThread2.getExecutor().shutdownNow();
-//    }
 
     @Override
     public void startFaceTrack() {
@@ -396,17 +373,11 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                         identification(ymFaceList);
 
                         // 到UI线程发送开门命令
-                        runOnUiThread(new Runnable(){
-                            @Override
-                            public void run() {
-                                //更新UI
-                                LogUtil.d("runOnUiThread identifyPerson = " + identifyPerson);
-                                if (identifyPerson > 0 && !isSendOpenGate) {
-                                    openTheGate();
-                                    isSendOpenGate = true;
-                                }
-                            }
-                        });
+                        if (identifyPerson > 0 && !isSendOpenGate) {
+                            openTheGate();
+                            isSendOpenGate = true;
+                            LogUtil.d("runOnUiThread identifyPerson = " + identifyPerson);
+                        }
                     }
                 }
             }
@@ -650,6 +621,10 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
             /* FixMe: 这步很快，可以跟踪到人脸的位置、关键点、角度、trackid */
             mYMFaceList = mYmFaceTrack.trackMulti(tempColorBuffer.array(), getFaceTrackWidth(), getFaceTrackHeight());
+            // add by gaobin
+            if (needToRegist()) {
+                mIdentifyCallback.onRegistTrack(tempColorBuffer.array());
+            }
            // LogUtil.d(TAG + " mYMFaceList.size() = " + mYMFaceList.size());
 
             if (mYMFaceList != null && mYMFaceList.size() > 0) {
@@ -683,8 +658,9 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
         }
 
         float scanle = (float) 1.3;
+
         drawFaceTrack(mYMFaceList, (mDataSource.isUVC() ? true : false), scanle, mColorWidth,
-                mCurrentUserName, age, happystr, livenessStatus, mCurrentDistance);
+                    mCurrentUserName, age, happystr, livenessStatus, mCurrentDistance);
     }
 
     /**
@@ -1077,6 +1053,4 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     private int getFaceTrackHeight() {
         return isCrop() ? cropHeitht : (mDataSource.isDuoDuo() ? GlobalDef.RES_DUODUO_DEPTH_HEIGHT : mColorHeight);
     }
-
-
 }

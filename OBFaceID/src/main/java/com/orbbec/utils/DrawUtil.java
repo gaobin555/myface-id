@@ -254,6 +254,122 @@ public class DrawUtil {
         }
     }
 
+    public static void drawRect(List<YMFace> faces, View renderView, boolean toFlip, float scaleBit,
+                                int marginLeft, int marginTop, int viewWidth, int videoWidth) {
+
+        // 当人脸数量为0时清除绘图（仅清一次）
+        if (faces == null || faces.size() <= 0) {
+            if (!isClearDrawed) {
+                Canvas canvas = ((SurfaceView) renderView).getHolder().lockCanvas();
+                if (canvas != null) {
+                    try {
+                        canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        ((SurfaceView) renderView).getHolder().unlockCanvasAndPost(canvas);
+                    }
+                }
+            }
+            isClearDrawed = true;
+            return;
+        }
+        isClearDrawed = false;
+
+        if (faces.size() > faceRectArray.length) {
+            faceRectArray = new FaceRect[faces.size()];
+        }
+
+        log("drawAnim: " + renderView.getWidth() + ":" + marginLeft + ";" + marginTop + ":" + viewWidth);
+        Paint paint = new Paint();
+        Canvas canvas = ((SurfaceView) renderView).getHolder().lockCanvas();
+        if (canvas != null) {
+            try {
+
+                int viewH = renderView.getHeight();
+                int viewW = renderView.getWidth();
+                canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+                if (faces == null || faces.size() == 0) {
+                    return;
+                }
+                int maxIndex = 0;
+
+                float maxFaceValue = 0;
+                for (int i = 0; i < faces.size(); i++) {
+                    if (faces.get(i).getRect()[2] > maxFaceValue) {
+                        maxFaceValue = faces.get(i).getRect()[2];
+                        maxIndex = i;
+                    }
+                }
+
+                if (strokeWidth <= 0) {
+                    strokeWidth = DisplayUtil.dip2px(getAppContext(), 3);
+                }
+                for (int i = 0; i < faces.size(); i++) {
+
+                    YMFace ymFace = faces.get(i);
+                    paint.setARGB(255, 4, 195, 124);
+                    paint.setStrokeWidth(strokeWidth);
+                    paint.setStyle(Paint.Style.STROKE);
+                    float[] rect = ymFace.getRect();
+                    float faceDX = (float) (rect[0] - (scaleBit - 1) * rect[2] / 2.0);
+                    float faceDY = (float) (rect[1] - (scaleBit - 1) * rect[3] / 2.0);
+                    float faceDWidth = rect[2] * scaleBit;
+                    float faceDHeight = rect[3] * scaleBit;
+
+                    float rectWidth = faceDWidth * viewWidth / videoWidth;
+                    float rectHeight = faceDHeight * viewWidth / videoWidth;
+
+                    //画外部的框
+                    float rectX = marginLeft + faceDX * viewWidth / videoWidth;
+                    if (toFlip) {
+                        float dx1 = videoWidth - faceDX - faceDWidth;
+                        rectX = marginLeft + dx1 * viewWidth / videoWidth;
+                    }
+                    float rectY = marginTop + faceDY * viewWidth / videoWidth;
+
+                    faceRectArray[i] = new FaceRect(rectX, rectY, rectWidth, rectHeight);
+
+                    //  网格外 图框
+                    RectF rectf = new RectF(rectX, rectY, rectX + rectWidth, rectY + rectWidth);
+                    canvas.drawRect(rectf, paint);
+                    log("drawRect :  (" + (640 - rect[0] - rect[2]) + " , " + rect[1] + ") " + rect[2] + " * " + rect[3]);
+                    //  draw grid
+                    int line = 10;
+                    int smailSize = DisplayUtil.dip2px(getAppContext(), 1.5f);
+                    paint.setStrokeWidth(smailSize);
+
+
+                    paint.setStrokeWidth(strokeWidth);
+                    paint.setColor(Color.WHITE);
+                    //                    注意前置后置摄像头问题
+
+                    float length = faceDHeight / 5;
+                    float width = rectWidth;
+                    float heng = strokeWidth / 2;
+                    canvas.drawLine(rectX - heng, rectY, rectX + length, rectY, paint);
+                    canvas.drawLine(rectX, rectY - heng, rectX, rectY + length, paint);
+
+                    rectX = rectX + width;
+                    canvas.drawLine(rectX + heng, rectY, rectX - length, rectY, paint);
+                    canvas.drawLine(rectX, rectY - heng, rectX, rectY + length, paint);
+
+                    rectY = rectY + width;
+                    canvas.drawLine(rectX + heng, rectY, rectX - length, rectY, paint);
+                    canvas.drawLine(rectX, rectY + heng, rectX, rectY - length, paint);
+
+                    rectX = rectX - width;
+                    canvas.drawLine(rectX - heng, rectY, rectX + length, rectY, paint);
+                    canvas.drawLine(rectX, rectY + heng, rectX, rectY - length, paint);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                ((SurfaceView) renderView).getHolder().unlockCanvasAndPost(canvas);
+            }
+        }
+    }
 
     /**
      * 判断是否有中文

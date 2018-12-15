@@ -15,4 +15,10 @@ public interface IdentifyCallback {
      */
     void onLiveness(boolean isLiveness, int identifyPerson, String nameFromPersonId, int happy);
 
+    /**
+     * 人脸检测录入
+     * @param data
+     */
+    void onRegistTrack(byte[] data);
+
 }

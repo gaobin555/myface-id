@@ -28,7 +28,7 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
     private ArrayList<User> userList = null;
 
     private LinearLayout ll_insert_cam;
-    private LinearLayout ll_insert_vid;
+//    private LinearLayout ll_insert_vid;
     private LinearLayout ll_insert_pic;
     private LinearLayout ll_insert_delete;
 
@@ -58,7 +58,7 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
     @Override
     void initView() {
         ll_insert_cam = (LinearLayout) findViewById(R.id.ll_insert_cam);
-        ll_insert_vid = (LinearLayout) findViewById(R.id.ll_insert_vid);
+//        ll_insert_vid = (LinearLayout) findViewById(R.id.ll_insert_vid);
         ll_insert_pic = (LinearLayout) findViewById(R.id.ll_insert_pic);
         ll_insert_delete = (LinearLayout) findViewById(R.id.ll_insert_delete);
         rcv_head = (RecyclerView) findViewById(R.id.rcv_head);
@@ -69,7 +69,7 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
     @Override
     void initEvent() {
         ll_insert_cam.setOnClickListener(this);
-        ll_insert_vid.setOnClickListener(this);
+//        ll_insert_vid.setOnClickListener(this);
         ll_insert_pic.setOnClickListener(this);
         ll_insert_delete.setOnClickListener(this);
     }
@@ -78,14 +78,14 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_insert_cam://拍照录入
-//                Intent registFromCamActivityIntent = new Intent(FaceRegistActivity.this, RegistFromCamAcitvity.class);
-//                startActivityForResult(registFromCamActivityIntent, 10000);
+                Intent registFromCamActivityIntent = new Intent(FaceRegistActivity.this, RegistFromCamAcitvity.class);
+                startActivityForResult(registFromCamActivityIntent, 10000);
                 break;
 
-            case R.id.ll_insert_vid://视频录入
+//            case R.id.ll_insert_vid://视频录入
 //                Intent registFromVidActivityIntent = new Intent(FaceRegistActivity.this, RegistFromVidAcitvity.class);
 //                startActivityForResult(registFromVidActivityIntent, 10000);
-                break;
+//                break;
 
             case R.id.ll_insert_pic://照片录入
                 Intent registFromPicActivityIntent = new Intent(FaceRegistActivity.this, RegistFromPicActivity.class);

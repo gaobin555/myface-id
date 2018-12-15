@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OBFaceID</string>
+    <string name="app_name">人脸识别系统</string>
 
     <string name="no_device">未检测到设备</string>
     <string name="open_fail_device">打开设备失败</string>
@@ -18,6 +18,12 @@
     <string name="send">发送指令</string>
     <string name="identify_success">用户匹配通过</string>
     <string name="open">开门</string>
+    <string name="add_face">添加</string>
+    <string name="time_default">"20:00"</string>
+    <string name="data_default">"2018-12-15"</string>
+    <string name="regist_title">人脸识别系统</string>
+    <string name="registing">"识别中..."</string>
+    <string name="nouser">非用户</string>
 
 
 </resources>

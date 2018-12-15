@@ -78,7 +78,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     private OpenGlView mDepthView;
     private SurfaceView drawView;
     private Button settingsButton;
-    private Button openGate;
+    private Button registButton;
 
     /**
      * @param savedInstanceState
@@ -210,11 +210,13 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
             }
         });
         // 开门指令
-        openGate = (Button) findViewById(R.id.SendButton);
-        openGate.setOnClickListener(new View.OnClickListener() {
+        registButton = (Button) findViewById(R.id.RegistButton);
+        registButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.openTheGate();
+//                mPresenter.openTheGate();
+                Intent intent = new Intent(RecognitionFaceActivity.this, FaceRegistActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -334,7 +336,10 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     @Override
     public void onLiveness(boolean isLiveness, final int identifyPerson, final String nameFromPersonId, final int happy) {
 
+    }
 
+    @Override
+    public void onRegistTrack(byte[] data){
 
     }
 
@@ -406,20 +411,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
             releaseOBFacePresenter();
             LogUtil.d("释放");
         }
-
-//        if (Build.VERSION.SDK_INT >= M) {
-//            // 插拔USB摄像头后需要重新申请权限，在权限框打开的时候会调用这个onPause()方法，若此时执行下面方法的话会造成深度图打不开的情况
-//            if (checkPermission()) {
-//
-//                if (mPresenter != null && mObDataSource != null && (System.currentTimeMillis() - resumeTime > GlobalDef.NUMBER_20)) {
-//                    mPresenter.stopFaceTrack();
-//                    mObDataSource.onRelease();
-//                    releaseOBFacePresenter();
-//                    Log.d(TAG, "onPause 释放");
-//                }
-//            }
-//        }
-    }
+   }
 
 
     @Override

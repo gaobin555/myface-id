@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background" />
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@drawable/background" />-->
 
 
     <!--<FrameLayout-->
@@ -23,7 +23,7 @@
             android:id="@+id/gl_surface"
             android:layout_width="@dimen/color_width"
             android:layout_height="@dimen/color_height"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/dimen_40"
             android:layout_gravity="center|top" />
 
         <!-- 人脸框 -->
@@ -35,32 +35,78 @@
 
     </FrameLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_gravity="top|left"
+        android:textColor="@color/colorText5"
+        android:textSize="@dimen/dimen_25"
+        android:text="@string/regist_title"/>
 
     <TextView
         android:id="@+id/txt_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="right"
         android:layout_marginTop="@dimen/recognition_tip_margin_top"
         android:textColor="@color/colorText5"
         android:textSize="@dimen/recognition_tip_size" />
 
+    <TextView
+        android:id="@+id/regist_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center|right"
+        android:textSize="@dimen/dimen_25"
+        android:textColor="@color/colorText5"
+        android:text="@string/registing"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center|left"
+        android:layout_marginLeft="@dimen/dimen_25">
+
+        <TextView
+            android:id="@+id/time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_default"
+            android:textColor="@android:color/white"
+            android:textSize="80sp" />
+
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/data_default"
+            android:textColor="@android:color/white"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
     <Button
-        android:id="@+id/SendButton"
+        android:id="@+id/RegistButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_40"
-        android:layout_gravity="bottom|left"
-        android:layout_marginRight="@dimen/dimen_40"
-        android:text="@string/open"/>
+        android:layout_gravity="bottom|right"
+        android:textSize="30dp"
+        android:text="@string/face_regist"/>
 
     <Button
         android:id="@+id/SettingsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_40"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|left"
         android:layout_marginRight="@dimen/dimen_40"
+        android:visibility="gone"
         android:text="@string/settings"
         />
 
@@ -91,6 +137,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/voice_right"
+            android:visibility="gone"
             android:text="测试版本"
             />
     </LinearLayout>

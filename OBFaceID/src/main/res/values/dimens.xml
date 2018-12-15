@@ -22,4 +22,5 @@
 
 
     <dimen name="dimen_25">25dp</dimen>
+    <dimen name="dimen_30">32dp</dimen>
 </resources>
