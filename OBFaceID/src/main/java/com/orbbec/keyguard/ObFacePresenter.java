@@ -123,7 +123,7 @@ public class ObFacePresenter extends BaseFacePresenter {
     }
 
     @Override
-    public boolean needToRegist(){
+    public boolean isRegistTask(){
         if (mContext instanceof RegistFromCamAcitvity) {
            return true;
         }

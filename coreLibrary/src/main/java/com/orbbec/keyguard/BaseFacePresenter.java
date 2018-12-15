@@ -63,7 +63,6 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     protected Context mContext;
     private DeviceCallback mDeviceCallback;
     private DetectionCallback mDetectionCallback;
-    private RegisterCallback mRegisterCallback;
     private IdentifyCallback mIdentifyCallback;
     protected YMFaceTrack mYmFaceTrack;
     private boolean mFaceTrackExit = false;
@@ -97,7 +96,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     }
 
 
-    private List<YMFace> mYMFaceList;
+    protected List<YMFace> mYMFaceList;
     private volatile boolean isFaceListUpdata = false;
     private Object facesLock = new Object();
     protected boolean needIdentificationFace = false;
@@ -191,7 +190,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
      * 判断是否需要录入
      * @return
      */
-    public abstract boolean needToRegist();
+    public abstract boolean isRegistTask();
 
     /**
      * 检测人脸对边框的间隔，避免半张脸录入的情况
@@ -378,6 +377,14 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                             isSendOpenGate = true;
                             LogUtil.d("runOnUiThread identifyPerson = " + identifyPerson);
                         }
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // 回调上层显示
+                                mIdentifyCallback.onLiveness(isLiveness, livenessStatus, identifyPerson, mCurrentUserName, happystr);
+                            }
+                        });
                     }
                 }
             }
@@ -619,41 +626,41 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
         synchronized (facesLock) {
 
-            /* FixMe: 这步很快，可以跟踪到人脸的位置、关键点、角度、trackid */
-            mYMFaceList = mYmFaceTrack.trackMulti(tempColorBuffer.array(), getFaceTrackWidth(), getFaceTrackHeight());
-            // add by gaobin
-            if (needToRegist()) {
+            // gaobin:回掉拍照录入接口
+            if (isRegistTask()) {
                 mIdentifyCallback.onRegistTrack(tempColorBuffer.array());
-            }
-           // LogUtil.d(TAG + " mYMFaceList.size() = " + mYMFaceList.size());
-
-            if (mYMFaceList != null && mYMFaceList.size() > 0) {
-
-                /* 判断最大人脸是否变更，以清除人脸跟踪框的显示 */
-                checkMaxFaceIndexIsChangeOrNot(mYMFaceList);
-
-                isFaceListUpdata = true;
-                /** 这里会唤醒沉睡的 {@linkplain this#faceTrackThread()} */
-                facesLock.notifyAll();
-
             } else {
-                /*  人脸丢失或者没有人脸 */
-                livenessStatus = LIVENESS_STATUS_CHECKETING;
-                livenessCount = 0;
-                livenessFailCount = 0;
+                /* FixMe: 这步很快，可以跟踪到人脸的位置、关键点、角度、trackid */
+                mYMFaceList = mYmFaceTrack.trackMulti(tempColorBuffer.array(), getFaceTrackWidth(), getFaceTrackHeight());
 
-                if (mDetectionCallback != null) {
-                    mDetectionCallback.onNoFace();
-                    if (noFaceCount < GlobalDef.MAX_FAIL_COUNT) {
-                        noFaceCount++;
-                    } else {
-                        noFaceCount = 0;
+                if (mYMFaceList != null && mYMFaceList.size() > 0) {
+
+                    /* 判断最大人脸是否变更，以清除人脸跟踪框的显示 */
+                    checkMaxFaceIndexIsChangeOrNot(mYMFaceList);
+
+                    isFaceListUpdata = true;
+                    /** 这里会唤醒沉睡的 {@linkplain this#faceTrackThread()} */
+                    facesLock.notifyAll();
+
+                } else {
+                    /*  人脸丢失或者没有人脸 */
+                    livenessStatus = LIVENESS_STATUS_CHECKETING;
+                    livenessCount = 0;
+                    livenessFailCount = 0;
+
+                    if (mDetectionCallback != null) {
+                        mDetectionCallback.onNoFace();
+                        if (noFaceCount < GlobalDef.MAX_FAIL_COUNT) {
+                            noFaceCount++;
+                        } else {
+                            noFaceCount = 0;
+                        }
                     }
+                    mCurrentUserName = "";
+                    age = null;
+                    happystr = "";
+                    mCurrentDistance = -1f;
                 }
-                mCurrentUserName = "";
-                age = null;
-                happystr = "";
-                mCurrentDistance = -1f;
             }
         }
 

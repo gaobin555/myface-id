@@ -240,13 +240,12 @@ public class RegistFromCamAcitvity extends AppCompatActivity implements Runnable
     /**
      * @param isLiveness       活体检测是否通过
      * @param identifyPerson   当前活体检测的脸的id
+     * @param livenessStatus   当前检测状态
      * @param nameFromPersonId 当前活体检测的脸的昵称
      * @param happy            表情值
      */
     @Override
-    public void onLiveness(boolean isLiveness, final int identifyPerson, final String nameFromPersonId, final int happy) {
-
-
+    public void onLiveness(boolean isLiveness, int livenessStatus, final int identifyPerson, final String nameFromPersonId, final String happy) {
 
     }
 
@@ -359,7 +358,8 @@ public class RegistFromCamAcitvity extends AppCompatActivity implements Runnable
         }
         final List<YMFace> ymFaces = mPresenter.mYmFaceTrack.trackMulti(bytes, iw, ih);
         final byte[] data = bytes;
-        runOnUiThread(new Runnable() {
+        mPresenter.mYMFaceList =ymFaces;
+                runOnUiThread(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void run() {

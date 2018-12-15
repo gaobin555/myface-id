@@ -13,7 +13,7 @@ public interface IdentifyCallback {
      * @param nameFromPersonId
      * @param happy
      */
-    void onLiveness(boolean isLiveness, int identifyPerson, String nameFromPersonId, int happy);
+    void onLiveness(boolean isLiveness, int livenessStatus, int identifyPerson, String nameFromPersonId, String happy);
 
     /**
      * 人脸检测录入

@@ -54,7 +54,7 @@
         android:textSize="@dimen/recognition_tip_size" />
 
     <TextView
-        android:id="@+id/regist_text"
+        android:id="@+id/recongition_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="50dp"
@@ -62,7 +62,7 @@
         android:layout_gravity="center|right"
         android:textSize="@dimen/dimen_25"
         android:textColor="@color/colorText5"
-        android:text="@string/registing"/>
+        android:text="@string/no_registing"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

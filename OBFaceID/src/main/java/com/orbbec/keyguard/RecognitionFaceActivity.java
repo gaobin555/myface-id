@@ -39,9 +39,12 @@ import com.orbbec.base.DeviceCallback;
 import com.orbbec.base.IdentifyCallback;
 import com.orbbec.base.OrbbecPresenter;
 import com.orbbec.utils.AppDef;
+import com.orbbec.utils.DateTimeUtil;
 import com.orbbec.utils.GlobalDef;
 import com.orbbec.utils.LogUtil;
+import com.orbbec.utils.OnGetCurrentDateTimeListener;
 import com.orbbec.utils.OpenNiHelper;
+import com.orbbec.utils.TimeThreadUtil;
 import com.orbbec.utils.XmyLog;
 import com.orbbec.view.GlFrameSurface;
 import com.orbbec.view.OpenGlView;
@@ -59,7 +62,13 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
  *
  */
 public class RecognitionFaceActivity extends AppCompatActivity implements Runnable,
-        DeviceCallback, DetectionCallback, IdentifyCallback, OrbbecPresenter.View {
+        DeviceCallback, DetectionCallback, IdentifyCallback, OrbbecPresenter.View, OnGetCurrentDateTimeListener {
+
+    public static final int LIVENESS_STATUS_CHECKETING = 0;
+    public static final int LIVENESS_STATUS_CHECK_SUCCESS = 1;
+    public static final int LIVENESS_STATUS_CHECK_FAIL = 2;
+    public static final int LIVENESS_STATUS_CHECK_INVALID = -1;
+    public static final int IDENTIFY_PERSON_CHECK_SUCCESS = 3; // ADD 人脸识别成功
 
     private static final boolean IS_SHOW_DEPTH_VIEW = false;
     private static final boolean DEBUG = false;
@@ -79,6 +88,10 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     private SurfaceView drawView;
     private Button settingsButton;
     private Button registButton;
+    private TextView mReconnitionText;
+    private DateTimeUtil dateTimeUtil;
+    private TextView date;
+    private TextView time;
 
     /**
      * @param savedInstanceState
@@ -197,6 +210,11 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
         drawView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         mTxtTip = (TextView) findViewById(R.id.txt_tip);
         mDepthView = (OpenGlView) findViewById(R.id.depthview);
+        mReconnitionText = (TextView) findViewById(R.id.recongition_text);
+        date = (TextView) findViewById(R.id.date_text);
+        time = (TextView) findViewById(R.id.time_text);
+        dateTimeUtil = DateTimeUtil.getInstance();
+        new TimeThreadUtil(this).start();
         if (!IS_SHOW_DEPTH_VIEW) {
             mDepthView.setVisibility(View.GONE);
         }
@@ -219,6 +237,12 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onGetDateTime() {
+        time.setText(dateTimeUtil.getCurrentTime());//显示时间
+        date.setText(dateTimeUtil.getCurrentDate() + " " + dateTimeUtil.getCurrentWeekDay(0));//显示年月日和星期
     }
 
 
@@ -330,12 +354,21 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     /**
      * @param isLiveness       活体检测是否通过
      * @param identifyPerson   当前活体检测的脸的id
+     * @param livenessStatus   当前检测状态
      * @param nameFromPersonId 当前活体检测的脸的昵称
      * @param happy            表情值
      */
     @Override
-    public void onLiveness(boolean isLiveness, final int identifyPerson, final String nameFromPersonId, final int happy) {
-
+    public void onLiveness(boolean isLiveness, int livenessStatus, final int identifyPerson, final String nameFromPersonId, final String happy) {
+        if (identifyPerson > 0 && livenessStatus != LIVENESS_STATUS_CHECK_INVALID) {
+            mReconnitionText.setText(getString(R.string.registed));
+        } else if (livenessStatus == LIVENESS_STATUS_CHECK_INVALID) {
+            mReconnitionText.setText(getString(R.string.registing));
+        } else if (livenessStatus == LIVENESS_STATUS_CHECK_SUCCESS) {
+            mReconnitionText.setText(getString(R.string.nouser));
+        } else{
+            mReconnitionText.setText(getString(R.string.no_registing));
+        }
     }
 
     @Override
