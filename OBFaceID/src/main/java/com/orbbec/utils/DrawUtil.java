@@ -216,21 +216,23 @@ public class DrawUtil {
                         maxIndex = 0;
 
                         String checktStatus = null;
-                        if (livenessStatus == LIVENESS_STATUS_CHECK_SUCCESS) {
-                            checktStatus = getAppContext().getString(R.string.liveness_check_success);
-                            paint.setColor(Color.GREEN);
-                        } else if (livenessStatus == LIVENESS_STATUS_CHECK_FAIL) {
-                            checktStatus = getAppContext().getString(R.string.liveness_check_fail);
-                            paint.setColor(Color.RED);
-                        } else if (livenessStatus == LIVENESS_STATUS_CHECK_INVALID) {
-                            checktStatus = getAppContext().getString(R.string.liveness_check_invalid);
-                            paint.setColor(Color.WHITE);
-                        } else if (livenessStatus == IDENTIFY_PERSON_CHECK_SUCCESS) {
+//                        if (livenessStatus == LIVENESS_STATUS_CHECK_SUCCESS) {
+//                            checktStatus = getAppContext().getString(R.string.liveness_check_success);
+//                            paint.setColor(Color.GREEN);
+//                        } else if (livenessStatus == LIVENESS_STATUS_CHECK_FAIL) {
+//                            checktStatus = getAppContext().getString(R.string.liveness_check_fail);
+//                            paint.setColor(Color.RED);
+//                        } else
+//                        if (livenessStatus == LIVENESS_STATUS_CHECK_INVALID) {
+//                            checktStatus = getAppContext().getString(R.string.liveness_check_invalid);
+//                            paint.setColor(Color.WHITE);
+//                        } else
+                        if (livenessStatus == IDENTIFY_PERSON_CHECK_SUCCESS) {
                             checktStatus = getAppContext().getString(R.string.identify_success);
                             paint.setColor(Color.GREEN);
-                        }
-                        else {
-                            //                            checktStatus = "";  // 检测中
+                        } else {
+                            checktStatus = " ";//getAppContext().getString(R.string.registing);
+                            paint.setColor(Color.WHITE);
                         }
                         if (checktStatus != null) {
                             Rect strRect = new Rect();

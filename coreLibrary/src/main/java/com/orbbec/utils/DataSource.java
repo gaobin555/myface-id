@@ -121,7 +121,6 @@ public class DataSource {
         }
     }
 
-
     public User getUserByName(String name) {
         open();
 
@@ -144,7 +143,6 @@ public class DataSource {
         close();
         return user;
     }
-
 
     public void upDataByName(String newName, String oldName, String brithday) {
         int i = 0;

@@ -19,7 +19,6 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -38,11 +37,9 @@ import com.orbbec.utils.DataSource;
 import com.orbbec.utils.GlobalDef;
 import com.orbbec.utils.LogUtil;
 import com.orbbec.utils.OpenNiHelper;
-import com.orbbec.utils.TrackDrawUtil;
 import com.orbbec.utils.UserDataUtil;
 import com.orbbec.utils.XmyLog;
 import com.orbbec.view.GlFrameSurface;
-import com.orbbec.view.OpenGlView;
 
 import org.openni.SensorType;
 

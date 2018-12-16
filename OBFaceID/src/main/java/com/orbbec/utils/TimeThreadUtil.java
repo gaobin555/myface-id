@@ -13,11 +13,9 @@ public class TimeThreadUtil extends Thread {
 
 
     private static final int CURRENTDATETIME = 1;
-    private static TimeThreadUtil timeThreadUtil;
-    private OnGetCurrentDateTimeListener listener;
+    private static OnGetCurrentDateTimeListener listener;
 
-
-    private Handler mHandler = new Handler() {
+    private static class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -29,7 +27,9 @@ public class TimeThreadUtil extends Thread {
                     break;
             }
         }
-    };
+    }
+
+    private final Handler mHandler = new MyHandler();
 
 
     public TimeThreadUtil(OnGetCurrentDateTimeListener listener) {

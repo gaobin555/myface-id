@@ -141,7 +141,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     private float mColorViewWidth;
     private float mColorViewHeight;
     private int identifyPerson = -111;
-    private boolean isSendOpenGate = false;
+    protected boolean isSendOpenGate = false;
     boolean isLiveness;
     private int livenessFailCount = 0;
     private int livenessCount = 0;
@@ -167,7 +167,6 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
     /**
      * 返回是否需要做活体验证
-     * 若返回false，则跳过活体验证直接回调 {@linkplain IdentifyCallback#onLiveness(boolean, int, String, int)}}
      *
      * @param identifyPerson
      * @param nameFromPersonId
@@ -370,21 +369,6 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                         }
                         mCurrentUser = null;
                         identification(ymFaceList);
-
-                        // 到UI线程发送开门命令
-                        if (identifyPerson > 0 && !isSendOpenGate) {
-                            openTheGate();
-                            isSendOpenGate = true;
-                            LogUtil.d("runOnUiThread identifyPerson = " + identifyPerson);
-                        }
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // 回调上层显示
-                                mIdentifyCallback.onLiveness(isLiveness, livenessStatus, identifyPerson, mCurrentUserName, happystr);
-                            }
-                        });
                     }
                 }
             }
@@ -792,9 +776,9 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                     Collections.sort(faceList, comparator);
                     int faceIndex = faceArrays.indexOfValue(faceList.get(0));
 
-                    if (faceIndex == -1 && mDetectionCallback != null) {
-                        mDetectionCallback.onNoFace();
-                    }
+//                    if (faceIndex == -1 && mDetectionCallback != null) {
+//                        mDetectionCallback.onNoFace();
+//                    }
                     YMFace face = faceList.get(0);
                     mSrcRect.set((int) face.getRect()[0], (int) face.getRect()[1], (int) (face.getRect()[0] + face.getRect()[2]), (int) (face.getRect()[1] + face.getRect()[3]));
                     recognitionFace(faceIndex);
@@ -803,14 +787,12 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                 if (mDetectionCallback != null) {
                     mDetectionCallback.onNoFace();
                     identifyPerson = -111;
-                    isSendOpenGate = false;
                 }
             }
         } else {
             if (mDetectionCallback != null) {
                 mDetectionCallback.onNoFace();
                 identifyPerson = -111;
-                isSendOpenGate = false;
             }
         }
     }
@@ -858,9 +840,10 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
                 }
             }
             if (distance != MEASURE_DISTANCE_IS_OK) {
-                if (mDetectionCallback != null) {
-                    mDetectionCallback.onNoFace();
-                }
+                // 此时有脸
+//                if (mDetectionCallback != null) {
+//                    mDetectionCallback.onNoFace();
+//                }
                 return;
             }
         }
@@ -884,10 +867,25 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
             // 人脸识别
             identifyPerson = mYmFaceTrack.identifyPerson(faceIndex);
             mCurrentUserName = getNameFromPersonId(identifyPerson);
-            Log.i("gaobin", "identifyPerson = " + identifyPerson);
+            LogUtil.i("identifyPerson = " + identifyPerson + "  isSendOpenGate = " + isSendOpenGate);
 //            isLiveness = mYmFaceTrack.ObIsLiveness(mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());// Gavin:使用新的jar包编译报错
             updateLivenessStatus(isLiveness, identifyPerson);
         }
+
+        // 到UI线程发送开门命令
+        if (identifyPerson > 0 && !isSendOpenGate) {
+            openTheGate();
+            isSendOpenGate = true;
+            LogUtil.d("runOnUiThread identifyPerson = " + identifyPerson);
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // 回调上层显示
+                mIdentifyCallback.onLiveness(isLiveness, livenessStatus, identifyPerson, mCurrentUserName, happystr);
+            }
+        });
 
         if (faceIndex != lastRecognitionFaceIndex) {
             mCurrentUserName = "";

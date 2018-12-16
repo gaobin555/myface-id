@@ -15,8 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -64,18 +62,13 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
 public class RecognitionFaceActivity extends AppCompatActivity implements Runnable,
         DeviceCallback, DetectionCallback, IdentifyCallback, OrbbecPresenter.View, OnGetCurrentDateTimeListener {
 
-    public static final int LIVENESS_STATUS_CHECKETING = 0;
     public static final int LIVENESS_STATUS_CHECK_SUCCESS = 1;
-    public static final int LIVENESS_STATUS_CHECK_FAIL = 2;
     public static final int LIVENESS_STATUS_CHECK_INVALID = -1;
-    public static final int IDENTIFY_PERSON_CHECK_SUCCESS = 3; // ADD 人脸识别成功
 
     private static final boolean IS_SHOW_DEPTH_VIEW = false;
-    private static final boolean DEBUG = false;
+//    private static final boolean DEBUG = false;
     private static final String TAG = "RecognitionFaceActivity";
     private long lastBackTime = 0;
-    private long backTimeOut = GlobalDef.GLOBAL_DELAY;
-    private long resumeTime = 0;
     private String mActionUsbPermission;
     private NoUsbDeviceDlg mNoUsbDeviceDlg;
     private GlFrameSurface mGLSurface;
@@ -86,16 +79,11 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     private AppDef mAppDef = new AppDef();
     private OpenGlView mDepthView;
     private SurfaceView drawView;
-    private Button settingsButton;
-    private Button registButton;
     private TextView mReconnitionText;
     private DateTimeUtil dateTimeUtil;
     private TextView date;
     private TextView time;
 
-    /**
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -219,7 +207,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
             mDepthView.setVisibility(View.GONE);
         }
         // settings
-        settingsButton = (Button)  findViewById(R.id.SettingsButton);
+        Button settingsButton = (Button)  findViewById(R.id.SettingsButton);
         settingsButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,7 +216,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
             }
         });
         // 开门指令
-        registButton = (Button) findViewById(R.id.RegistButton);
+        Button registButton = (Button) findViewById(R.id.RegistButton);
         registButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,8 +229,9 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
 
     @Override
     public void onGetDateTime() {
+        String dateAndWeek = dateTimeUtil.getCurrentDate() + " " + dateTimeUtil.getCurrentWeekDay(0);
         time.setText(dateTimeUtil.getCurrentTime());//显示时间
-        date.setText(dateTimeUtil.getCurrentDate() + " " + dateTimeUtil.getCurrentWeekDay(0));//显示年月日和星期
+        date.setText(dateAndWeek);//显示年月日和星期
     }
 
 
@@ -251,8 +240,14 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
      */
     @Override
     public void onNoFace() {
-
-
+        // 未检测到人脸是重置开门状态
+        mPresenter.isSendOpenGate = false;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mReconnitionText.setText(getString(R.string.no_registing));
+            }
+        });
     }
 
     /**
@@ -360,7 +355,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
      */
     @Override
     public void onLiveness(boolean isLiveness, int livenessStatus, final int identifyPerson, final String nameFromPersonId, final String happy) {
-        if (identifyPerson > 0 && livenessStatus != LIVENESS_STATUS_CHECK_INVALID) {
+        if (mPresenter.isSendOpenGate) {
             mReconnitionText.setText(getString(R.string.registed));
         } else if (livenessStatus == LIVENESS_STATUS_CHECK_INVALID) {
             mReconnitionText.setText(getString(R.string.registing));
@@ -410,7 +405,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
             mDepthView.onResume();
         }
 
-        resumeTime = System.currentTimeMillis();
+//        long resumeTime = System.currentTimeMillis();
         registerUsbReceiver();
         if (!OpenNiHelper.hasObUsbDevice(getApplicationContext())) {
             showNoUsbDialog();
@@ -421,9 +416,9 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
 
                 ViewGroup.LayoutParams layout = mGLSurface.getLayoutParams();
                 int w = layout.width;
-                int h = layout.height;
-                int toHeight = w * GlobalDef.RES_DUODUO_DEPTH_HEIGHT / GlobalDef.RES_DUODUO_DEPTH_WIDTH;
-                layout.height = toHeight;
+//                int h = layout.height;
+//                int toHeight = w * GlobalDef.RES_DUODUO_DEPTH_HEIGHT / GlobalDef.RES_DUODUO_DEPTH_WIDTH;
+                layout.height = w * GlobalDef.RES_DUODUO_DEPTH_HEIGHT / GlobalDef.RES_DUODUO_DEPTH_WIDTH;//toHeight;
             }
         }
     }
@@ -450,7 +445,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     @Override
     public void run() {
         if (mObDataSource != null) {
-            log("关闭深度流...");
+            LogUtil.d("关闭深度流...");
             mObDataSource.stopDepth();
         }
     }
@@ -458,6 +453,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         long currentTime = System.currentTimeMillis();
+        long backTimeOut = GlobalDef.GLOBAL_DELAY;
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
@@ -549,10 +545,4 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
             }
         }
     };
-
-    private void log(String str) {
-        if (DEBUG) {
-            Log.i(TAG, str);
-        }
-    }
 }

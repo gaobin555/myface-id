@@ -26,19 +26,19 @@ public class DateTimeUtil {
 
 
     public String getCurrentDateTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss", Locale.CHINA);
         Date date = new Date(System.currentTimeMillis());
-        String curDate = formatter.format(date);
-        return curDate;
+//        String curDate = formatter.format(date);
+        return formatter.format(date);
     }
 
 
     //获取系统当前日期
     public String getCurrentDate() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日", Locale.CHINA);
         Date date = new Date(System.currentTimeMillis());
-        String curDate = formatter.format(date);
-        return curDate;
+//        String curDate = formatter.format(date);
+        return formatter.format(date);
     }
 
 
@@ -46,27 +46,27 @@ public class DateTimeUtil {
     public String getCurrentDateEnglish() {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
         Date date = new Date(System.currentTimeMillis());
-        String curDate = formatter.format(date);
-        return curDate;
+//        String curDate = formatter.format(date);
+        return formatter.format(date);
     }
 
 
     //获取系统当前时间
     public String getCurrentTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
         Date date = new Date(System.currentTimeMillis());
-        String curDate = formatter.format(date);
-        return curDate;
+//        String curDate = formatter.format(date);
+        return formatter.format(date);
     }
 
 
 //获取系统当前时间
 
     public String getCurrentTimeHHMM() {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.CHINA);
         Date date = new Date(System.currentTimeMillis());
-        String curDate = formatter.format(date);
-        return curDate;
+//        String curDate = formatter.format(date);
+        return formatter.format(date);
     }
 
     //获取系统当前是星期几

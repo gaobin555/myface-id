@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.orbbec.adapter.OnItemClickListener;
 import com.orbbec.adapter.UserListAdapter;
@@ -53,6 +54,7 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
         userList = UserDataUtil.updateDataSource();
         LogUtil.i(TAG + " initData userList length = " + userList.size());
         adapter = new UserListAdapter(userList);
+        adapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -135,6 +137,9 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
      */
     @Override
     public void onClick(int position) {
+        // TODO: 2018/12/16 对数据列表进行操作，数据库同步操作
+        User curUser = userList.get(position);
+        Toast.makeText(this, "点击了 Face ID = " + curUser.getPersonId() + " name = " + curUser.getName(), Toast.LENGTH_SHORT).show();
 
     }
 
