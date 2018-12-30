@@ -1,7 +1,7 @@
 package com.orbbec.utils;
 
 
-public class AppDef extends GlobalDef{
+public class AppDef extends GlobalDef {
 
     public int getColorWidth(){
         return 640;

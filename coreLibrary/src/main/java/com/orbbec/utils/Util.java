@@ -7,7 +7,6 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;

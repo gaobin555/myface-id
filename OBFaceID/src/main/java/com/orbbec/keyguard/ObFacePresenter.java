@@ -1,34 +1,16 @@
 package com.orbbec.keyguard;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.os.Environment;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.SurfaceView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.orbbec.base.BaseApplication;
 import com.orbbec.constant.Constant;
 import com.orbbec.model.User;
 import com.orbbec.utils.AppDef;
-import com.orbbec.utils.BitmapUtil;
-import com.orbbec.utils.DataSource;
 import com.orbbec.utils.DrawUtil;
 import com.orbbec.utils.GlobalDef;
-import com.orbbec.utils.LogUtil;
 import com.orbbec.utils.SerialPortHelper;
 import com.orbbec.utils.UserDataUtil;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +52,7 @@ public class ObFacePresenter extends BaseFacePresenter {
 
     /**
      * 是否需要检查距离
-     * @return
+     * @return true
      */
     @Override
     public boolean needToMeasureDistance(){
@@ -79,8 +61,8 @@ public class ObFacePresenter extends BaseFacePresenter {
 
     /**
      * 获取用户姓名
-     * @param personId
-     * @return
+     * @param personId 用户ID
+     * @return 返回用户姓名
      */
     @Override
     public String getNameFromPersonId(int personId) {
@@ -111,10 +93,10 @@ public class ObFacePresenter extends BaseFacePresenter {
 
     /**
      * 返回是否需要做活体验证
-     * @param identifyPerson
-     * @param nameFromPersonId
-     * @param happy
-     * @return
+     * @param identifyPerson  identifyPerson
+     * @param nameFromPersonId nameFromPersonId
+     * @param happy  happy
+     * @return true
      */
     @Override
     public boolean needToCheckLiveness(int identifyPerson, String nameFromPersonId, int happy){
@@ -124,10 +106,12 @@ public class ObFacePresenter extends BaseFacePresenter {
 
     @Override
     public boolean isRegistTask(){
-        if (mContext instanceof RegistFromCamAcitvity) {
-           return true;
-        }
-        return false;
+//        if (mContext instanceof RegistFromCamAcitvity) {
+//           return true;
+//        } else {
+//            return false;
+//        }
+        return mContext instanceof RegistFromCamAcitvity;
     }
 
     @Override
@@ -164,10 +148,10 @@ public class ObFacePresenter extends BaseFacePresenter {
 
     /**
      * 视频view相对于画人脸框的位置
-     * @param marginLeft
-     * @param marginTop
-     * @param viewWidth
-     * @param viewHeight
+     * @param marginLeft  左
+     * @param marginTop   上
+     * @param viewWidth   宽
+     * @param viewHeight  高
      */
     public void setFaceTrackDrawViewMargin(int marginLeft, int marginTop, int viewWidth, int viewHeight){
         mVideoViewMarginLeft = marginLeft;

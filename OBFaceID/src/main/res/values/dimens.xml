@@ -23,4 +23,7 @@
 
     <dimen name="dimen_25">25dp</dimen>
     <dimen name="dimen_30">32dp</dimen>
+
+    <dimen name="time_size">30sp</dimen>
+    <dimen name="date_size">15sp</dimen>
 </resources>

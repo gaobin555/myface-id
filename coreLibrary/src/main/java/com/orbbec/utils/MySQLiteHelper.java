@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.orbbec.constant.Constant;
 
-import java.io.File;
 /**
  * Created by brin on 17/8/22.
  */

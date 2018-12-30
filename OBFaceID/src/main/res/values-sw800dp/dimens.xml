@@ -9,4 +9,7 @@
 
     <dimen name="dimen_320">320dp</dimen>
     <dimen name="dimen_240">240dp</dimen>
+
+    <dimen name="time_size">80sp</dimen>
+    <dimen name="date_size">30sp</dimen>
 </resources>

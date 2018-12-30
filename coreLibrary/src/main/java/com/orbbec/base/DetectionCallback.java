@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 import org.openni.SensorType;
-import org.openni.VideoStream;
 
 import java.nio.ByteBuffer;
 

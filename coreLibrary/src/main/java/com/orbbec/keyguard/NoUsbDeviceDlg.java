@@ -2,15 +2,15 @@ package com.orbbec.keyguard;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.orbbec.keyguard.core.R;
+
 
 /**
  * @author lgp

@@ -12,7 +12,6 @@ import com.orbbec.model.User;
 import java.util.ArrayList;
 
 
-
 /**
  * 本地数据库使用帮助类
  * Created by mac on 16/7/11.

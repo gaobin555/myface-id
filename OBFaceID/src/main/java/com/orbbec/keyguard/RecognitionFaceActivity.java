@@ -215,7 +215,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
                 startActivity(intent);
             }
         });
-        // 开门指令
+        // 人脸注册
         Button registButton = (Button) findViewById(R.id.RegistButton);
         registButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -408,8 +408,8 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
 //        long resumeTime = System.currentTimeMillis();
         registerUsbReceiver();
         if (!OpenNiHelper.hasObUsbDevice(getApplicationContext())) {
-            showNoUsbDialog();
-//            Toast.makeText(this, "请插入USB摄像头,否则无法使用", Toast.LENGTH_SHORT).show();
+//            showNoUsbDialog();
+            Toast.makeText(this, "请插入USB摄像头,否则无法使用", Toast.LENGTH_SHORT).show();
         } else {
             if (mObDataSource.isDuoDuo()) {
                 Log.e(TAG, "drawView.setY ...");

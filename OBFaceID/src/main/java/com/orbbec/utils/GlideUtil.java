@@ -10,7 +10,6 @@ import com.orbbec.base.BaseApplication;
 import java.io.File;
 
 
-
 /**
  * 图片加载工具类
  * Created by mac on 16/9/30.

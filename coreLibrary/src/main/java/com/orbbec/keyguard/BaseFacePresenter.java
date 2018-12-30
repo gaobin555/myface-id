@@ -3,10 +3,8 @@ package com.orbbec.keyguard;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import com.lzh.easythread.EasyThread;
 import com.orbbec.NativeNI.OrbbecUtils;
@@ -16,7 +14,6 @@ import com.orbbec.base.FacePresenter;
 import com.orbbec.base.IdentifyCallback;
 import com.orbbec.base.ObSource;
 import com.orbbec.base.OrbbecPresenter;
-import com.orbbec.base.RegisterCallback;
 import com.orbbec.constant.Constant;
 import com.orbbec.model.User;
 import com.orbbec.utils.DataSource;
@@ -34,12 +31,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import mobile.ReadFace.YMFace;
 import mobile.ReadFace.YMFaceTrack;
 
-import static com.orbbec.constant.Constant.FeatureDatabasePath;
 import static com.orbbec.keyguard.BaseFacePresenter.Distance.MEASURE_DISTANCE_IS_OK;
 import static com.orbbec.keyguard.BaseFacePresenter.Distance.MEASURE_DISTANCE_TOO_CLOSE;
 import static com.orbbec.keyguard.BaseFacePresenter.Distance.MEASURE_DISTANCE_TOO_FAR;
@@ -863,12 +858,15 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
         // 单纯为了判断活体检测的显示（人脸跟踪框）
         if (needToCheckLiveness(identifyPerson, mCurrentUserName, happy)) {
-            isLiveness = mYmFaceTrack.ObIsLiveness(mColorBuffer.array(), mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());
+            int[] irLiveness = mYmFaceTrack.livenessDetectInfrared(faceIndex); // 红外活体
+            // TODO:需要通过红外识别已存在的人脸
+            //isLiveness = mYmFaceTrack.ObIsLiveness(mColorBuffer.array(), mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());
+            isLiveness = mYmFaceTrack.ObIsLiveness(mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());// Gavin:使用新的jar包编译报错
+            LogUtil.i("红外活体irLiveness = " + irLiveness[0] + "  isLiveness = " + isLiveness);
             // 人脸识别
             identifyPerson = mYmFaceTrack.identifyPerson(faceIndex);
             mCurrentUserName = getNameFromPersonId(identifyPerson);
             LogUtil.i("identifyPerson = " + identifyPerson + "  isSendOpenGate = " + isSendOpenGate);
-//            isLiveness = mYmFaceTrack.ObIsLiveness(mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());// Gavin:使用新的jar包编译报错
             updateLivenessStatus(isLiveness, identifyPerson);
         }
 

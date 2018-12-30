@@ -10,7 +10,6 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.ImageFormat;
-import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -20,7 +19,6 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.orbbec.NativeNI.OrbbecUtils;
 import com.orbbec.utils.FpsMeter;
 import com.orbbec.utils.GlobalDef;
 import com.orbbec.view.GlFrameSurface;

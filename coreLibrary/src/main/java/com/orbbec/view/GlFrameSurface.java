@@ -3,7 +3,6 @@ package com.orbbec.view;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.facebook.stetho.common.LogUtil;
 import com.orbbec.keyguard.RgbCamera;

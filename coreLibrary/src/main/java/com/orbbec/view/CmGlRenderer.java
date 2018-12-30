@@ -3,7 +3,7 @@ package com.orbbec.view;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLSurfaceView.Renderer;
-import android.util.Log;
+
 import com.orbbec.NativeNI.CmOpenGLES;
 import java.nio.ByteBuffer;
 

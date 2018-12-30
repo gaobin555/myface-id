@@ -14,19 +14,13 @@ import android.view.View;
 
 import com.orbbec.base.BaseApplication;
 import com.orbbec.keyguard.R;
-import com.orbbec.model.User;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
+
 import dou.utils.DisplayUtil;
 import mobile.ReadFace.YMFace;
-import static com.orbbec.base.BaseApplication.getAppContext;
+
 import static com.orbbec.keyguard.BaseFacePresenter.IDENTIFY_PERSON_CHECK_SUCCESS;
-import static com.orbbec.keyguard.BaseFacePresenter.LIVENESS_STATUS_CHECK_FAIL;
-import static com.orbbec.keyguard.BaseFacePresenter.LIVENESS_STATUS_CHECK_INVALID;
-import static com.orbbec.keyguard.BaseFacePresenter.LIVENESS_STATUS_CHECK_SUCCESS;
 
 
 /**
@@ -110,7 +104,7 @@ public class DrawUtil {
                 }
 
                 if (strokeWidth <= 0) {
-                    strokeWidth = DisplayUtil.dip2px(getAppContext(), 3);
+                    strokeWidth = DisplayUtil.dip2px(BaseApplication.getAppContext(), 3);
                 }
                 for (int i = 0; i < faces.size(); i++) {
 
@@ -143,7 +137,7 @@ public class DrawUtil {
                     log("drawRect :  (" + (640 - rect[0] - rect[2]) + " , " + rect[1] + ") " + rect[2] + " * " + rect[3]);
                     //  draw grid
                     int line = 10;
-                    int smailSize = DisplayUtil.dip2px(getAppContext(), 1.5f);
+                    int smailSize = DisplayUtil.dip2px(BaseApplication.getAppContext(), 1.5f);
                     paint.setStrokeWidth(smailSize);
 
 
@@ -175,7 +169,7 @@ public class DrawUtil {
                         paint.setColor(Color.WHITE);
                         paint.setStrokeWidth(0);
                         paint.setStyle(Paint.Style.FILL);
-                        int fontSize = DisplayUtil.dip2px(getAppContext(), 20);
+                        int fontSize = DisplayUtil.dip2px(BaseApplication.getAppContext(), 20);
                         paint.setTextSize(fontSize);
                         Paint.FontMetrics fm = paint.getFontMetrics();
                         int textHeight = (int) (Math.ceil(fm.descent - fm.ascent) + 2);
@@ -192,7 +186,7 @@ public class DrawUtil {
                         float startY = faceMaxY + (faceMaxHeight - (rowSpacing + textHeight) * (distance > 0.1 ? 3 : 2)) / 2 + rowSpacing + strokeWidth;
                         startY += 4;
 
-                        Bitmap bm = BitmapFactory.decodeResource(getAppContext().getResources(), R.drawable.canvas_bg);
+                        Bitmap bm = BitmapFactory.decodeResource(BaseApplication.getAppContext().getResources(), R.drawable.canvas_bg);
                         canvas.drawBitmap(bm, startX - 10, startY - (rowSpacing + textHeight) + 4, paint);
 
 
@@ -228,7 +222,7 @@ public class DrawUtil {
 //                            paint.setColor(Color.WHITE);
 //                        } else
                         if (livenessStatus == IDENTIFY_PERSON_CHECK_SUCCESS) {
-                            checktStatus = getAppContext().getString(R.string.identify_success);
+                            checktStatus = BaseApplication.getAppContext().getString(R.string.identify_success);
                             paint.setColor(Color.GREEN);
                         } else {
                             checktStatus = " ";//getAppContext().getString(R.string.registing);
@@ -305,7 +299,7 @@ public class DrawUtil {
                 }
 
                 if (strokeWidth <= 0) {
-                    strokeWidth = DisplayUtil.dip2px(getAppContext(), 3);
+                    strokeWidth = DisplayUtil.dip2px(BaseApplication.getAppContext(), 3);
                 }
                 for (int i = 0; i < faces.size(); i++) {
 
@@ -338,7 +332,7 @@ public class DrawUtil {
                     log("drawRect :  (" + (640 - rect[0] - rect[2]) + " , " + rect[1] + ") " + rect[2] + " * " + rect[3]);
                     //  draw grid
                     int line = 10;
-                    int smailSize = DisplayUtil.dip2px(getAppContext(), 1.5f);
+                    int smailSize = DisplayUtil.dip2px(BaseApplication.getAppContext(), 1.5f);
                     paint.setStrokeWidth(smailSize);
 
 

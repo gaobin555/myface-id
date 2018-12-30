@@ -50,8 +50,6 @@ import java.util.List;
 
 import mobile.ReadFace.YMFace;
 
-import static android.os.Build.VERSION_CODES.M;
-import static android.view.View.GONE;
 import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
 
 public class RegistFromCamAcitvity extends AppCompatActivity implements Runnable,
@@ -648,6 +646,7 @@ public class RegistFromCamAcitvity extends AppCompatActivity implements Runnable
                         DataSource dataSource = new DataSource(BaseApplication.getContext());
                         dataSource.insert(user);
                         BitmapUtil.saveBitmap(head, Constant.ImagePath + personId + ".jpg");
+                        LogUtil.d(TAG+"doEnd Save Bitmap:" + Constant.ImagePath + personId + ".jpg");
 
                         final AlertDialog.Builder builder = new AlertDialog.Builder(RegistFromCamAcitvity.this);
                         builder.setCancelable(false);
