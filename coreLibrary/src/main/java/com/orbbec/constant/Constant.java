@@ -14,6 +14,9 @@ public class Constant {
     public  static  int BAUDRATE = 9600;//波特率
     public  static  String OPENGATE = "AA00010200000800000000000000000B"; // 開門指令
 
+    public  static String appid = "0dcd4abce632197398b79c5c87b4b87b";
+    public  static String appsecret = "8434acc5f5086c9e684460dd39f3b4087c79ac4c";
+
     static {
         File file = new File(Constant.UserDatabasePath);
         if (!file.exists()) {

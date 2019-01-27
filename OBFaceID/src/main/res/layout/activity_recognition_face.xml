@@ -106,9 +106,7 @@
         android:layout_margin="@dimen/dimen_40"
         android:layout_gravity="bottom|start"
         android:layout_marginRight="@dimen/dimen_40"
-        android:visibility="gone"
-        android:text="@string/settings"
-        />
+        android:text="@string/settings" />
 
 
 
@@ -121,8 +119,7 @@
             android:id="@+id/depthview"
             android:layout_margin="@dimen/dimen_25"
             android:layout_width="@dimen/dimen_320"
-            android:layout_height="@dimen/dimen_240"
-            android:visibility="gone" />
+            android:layout_height="@dimen/dimen_240" />
 
     </LinearLayout>
     <LinearLayout

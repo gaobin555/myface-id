@@ -391,7 +391,7 @@ public class RegistFromCamAcitvity extends AppCompatActivity implements Runnable
                     if (isAdd) {//点击add face按钮后isAdd=true
                         isCorrect = false;
                         personId = mPresenter.mYmFaceTrack.identifyPerson(0);
-                        if (personId == -111) {
+                        if (personId == -111 || !mPresenter.isRegistUser(personId)) {
                             addFace(bytes, rect);
                         } else {
                             User user = UserDataUtil.getUserById(personId + "");
@@ -504,7 +504,7 @@ public class RegistFromCamAcitvity extends AppCompatActivity implements Runnable
 
             case 4:
                 doEnd();
-                addCount++;
+                addCount = 0;
                 break;
 
             default:
@@ -608,14 +608,13 @@ public class RegistFromCamAcitvity extends AppCompatActivity implements Runnable
             addCount++;//添加人脸成功
             view_show_image.setBackgroundResource(R.mipmap.header_2);
             Bitmap image = BitmapUtil.getBitmapFromYuvByte(bytes, mAppDef.getColorWidth(), mAppDef.getColorHeight());
+            if (image == null) {
+                LogUtil.d("xxx addFace image == null");
+            }
             //TODO 此处在保存人脸小图
-            if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                Matrix matrix = new Matrix();
-                matrix.postRotate(270);
-                head = Bitmap.createBitmap(image, mAppDef.getColorWidth() - (int) rect[1] -
-                        (int) rect[3], (int) rect[0], (int) rect[3], (int) rect[2], matrix, true);
-            } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                head = Bitmap.createBitmap(image, (int) rect[0], (int) rect[1], (int) rect[2], (int) rect[3], null, true);
+            head = Bitmap.createBitmap(image, (int) rect[0], (int) rect[1], (int) rect[2], (int) rect[3], null, true);
+            if (head == null) {
+                LogUtil.d("xxx addFace head == null");
             }
         } else {
             Toast.makeText(this, "添加人脸失败！请重新添加", Toast.LENGTH_SHORT).show();
@@ -645,8 +644,11 @@ public class RegistFromCamAcitvity extends AppCompatActivity implements Runnable
                         user.setScore(score);
                         DataSource dataSource = new DataSource(BaseApplication.getContext());
                         dataSource.insert(user);
-                        BitmapUtil.saveBitmap(head, Constant.ImagePath + personId + ".jpg");
-                        LogUtil.d(TAG+"doEnd Save Bitmap:" + Constant.ImagePath + personId + ".jpg");
+                        boolean sucess = BitmapUtil.saveBitmap(head, Constant.ImagePath + personId + ".jpg");
+                        LogUtil.d(TAG+"doEnd Save Bitmap:" + Constant.ImagePath + personId + ".jpg" + " save sucess = " + sucess);
+                        if(head == null) {
+                            LogUtil.d("head == null");
+                        }
 
                         final AlertDialog.Builder builder = new AlertDialog.Builder(RegistFromCamAcitvity.this);
                         builder.setCancelable(false);

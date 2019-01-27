@@ -50,15 +50,15 @@ public abstract class NoCameraActivity extends BaseActivity {
         //设置人脸检测距离，默认近距离，需要在initTrack之前调用
         faceTrack.setDistanceType(YMFaceTrack.DISTANCE_TYPE_FAR);
         //license激活版本初始化
-        //int result = faceTrack.initTrack(this, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640,
-        //SenseConfig.appid, SenseConfig.appsecret);
+        int result = faceTrack.initTrack(this, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640,
+                Constant.appid, Constant.appsecret);
 
         //普通有效期版本初始化
         File file = new File(Constant.FeatureDatabasePath);
         if (!file.exists()) {
             file.mkdirs();
         }
-        int result = faceTrack.initTrack(this, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640, Constant.FeatureDatabasePath);
+        //int result = faceTrack.initTrack(this, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640, Constant.FeatureDatabasePath);
         //设置人脸识别置信度，设置75，不允许修改
         if (result == 0) {
             //faceTrack.setRecognitionConfidence(75);

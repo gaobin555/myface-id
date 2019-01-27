@@ -190,7 +190,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
             LogUtil.d(TAG+" Width = " + mAppDef.getColorWidth() + "  Height = " + mAppDef.getColorHeight());
         }
         if (ObDataSource.isUVC(this)) {
-            LogUtil.d(TAG+"ObDataSource.isUVC");
+            LogUtil.d(TAG+" ObDataSource.isUVC");
             mGLSurface.changeRotation(0, true);
         }
         drawView = (SurfaceView) findViewById(R.id.pointView);
@@ -355,7 +355,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
      */
     @Override
     public void onLiveness(boolean isLiveness, int livenessStatus, final int identifyPerson, final String nameFromPersonId, final String happy) {
-        if (mPresenter.isSendOpenGate) {
+        if (mPresenter != null && mPresenter.isSendOpenGate) {
             mReconnitionText.setText(getString(R.string.registed));
         } else if (livenessStatus == LIVENESS_STATUS_CHECK_INVALID) {
             mReconnitionText.setText(getString(R.string.registing));
@@ -408,8 +408,8 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
 //        long resumeTime = System.currentTimeMillis();
         registerUsbReceiver();
         if (!OpenNiHelper.hasObUsbDevice(getApplicationContext())) {
-//            showNoUsbDialog();
-            Toast.makeText(this, "请插入USB摄像头,否则无法使用", Toast.LENGTH_SHORT).show();
+            showNoUsbDialog();
+//            Toast.makeText(this, "请插入USB摄像头,否则无法使用", Toast.LENGTH_SHORT).show();
         } else {
             if (mObDataSource.isDuoDuo()) {
                 Log.e(TAG, "drawView.setY ...");
@@ -437,7 +437,7 @@ public class RecognitionFaceActivity extends AppCompatActivity implements Runnab
             mObDataSource.onRelease();
             mPresenter = null;
             releaseOBFacePresenter();
-            LogUtil.d("释放");
+            LogUtil.d("onPause 释放");
         }
    }
 

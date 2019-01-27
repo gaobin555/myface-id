@@ -178,7 +178,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     /**
      *  开门
      */
-    public abstract void openTheGate();
+    public abstract boolean openTheGate(int personId);
 
     /**
      * 判断是否需要录入
@@ -292,6 +292,8 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
         if (mYmFaceTrack == null) {
             mYmFaceTrack = new YMFaceTrack();
             int result = mYmFaceTrack.initTrack(mContext, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640, Constant.FeatureDatabasePath);
+//            int result = mYmFaceTrack.initTrack(mContext, YMFaceTrack.FACE_0, YMFaceTrack.RESIZE_WIDTH_640,
+//                    Constant.appid, Constant.appsecret);
             if (result == 0){
                 mYmFaceTrack.setRecognitionConfidence(75);
                 LogUtil.i(TAG+" initTrack初始化检测器成功 + facedb size: " + mYmFaceTrack.getEnrolledPersonIds().size());
@@ -460,6 +462,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
             ((GlFrameSurface) mSurfaceView).updateNV21Data(data);
         }
         if (mDetectReferColorView == null) {
+            LogUtil.d(TAG + " UVC mDetectReferColorView == null");
             return;
         }
         fpsMeter.mesureFps();
@@ -501,6 +504,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
     @Override
     public void onColorUpdate(ByteBuffer data, int strideInBytes) {
         if (mDetectReferColorView == null) {
+            LogUtil.d("onColorUpdate: rgb888 mDetectReferColorView == null");
             return;
         }
         fpsMeter.mesureFps();
@@ -611,7 +615,7 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
             } else {
                 /* FixMe: 这步很快，可以跟踪到人脸的位置、关键点、角度、trackid */
                 mYMFaceList = mYmFaceTrack.trackMulti(tempColorBuffer.array(), getFaceTrackWidth(), getFaceTrackHeight());
-
+                // gaobin 第二次人脸后此处mYMFaceList.size()为 0
                 if (mYMFaceList != null && mYMFaceList.size() > 0) {
 
                     /* 判断最大人脸是否变更，以清除人脸跟踪框的显示 */
@@ -858,11 +862,12 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
         // 单纯为了判断活体检测的显示（人脸跟踪框）
         if (needToCheckLiveness(identifyPerson, mCurrentUserName, happy)) {
-            int[] irLiveness = mYmFaceTrack.livenessDetectInfrared(faceIndex); // 红外活体
+//            int[] irLiveness = mYmFaceTrack.livenessDetectInfrared(faceIndex); // 红外活体
             // TODO:需要通过红外识别已存在的人脸
-            //isLiveness = mYmFaceTrack.ObIsLiveness(mColorBuffer.array(), mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());
-            isLiveness = mYmFaceTrack.ObIsLiveness(mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());// Gavin:使用新的jar包编译报错
-            LogUtil.i("红外活体irLiveness = " + irLiveness[0] + "  isLiveness = " + isLiveness);
+            // gaobin: 旧包和新包不同需要修改
+            isLiveness = mYmFaceTrack.ObIsLiveness(mColorBuffer.array(), mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());
+//            isLiveness = mYmFaceTrack.ObIsLiveness(mDepthBuffer, faceIndex, getFaceTrackWidth(), getFaceTrackHeight());// Gavin:使用新的jar包编译报错
+//            LogUtil.i("红外活体irLiveness = " + irLiveness[0] + "  isLiveness = " + isLiveness);
             // 人脸识别
             identifyPerson = mYmFaceTrack.identifyPerson(faceIndex);
             mCurrentUserName = getNameFromPersonId(identifyPerson);
@@ -872,9 +877,10 @@ public abstract class BaseFacePresenter implements OrbbecPresenter, FacePresente
 
         // 到UI线程发送开门命令
         if (identifyPerson > 0 && !isSendOpenGate) {
-            openTheGate();
-            isSendOpenGate = true;
-            LogUtil.d("runOnUiThread identifyPerson = " + identifyPerson);
+            if(openTheGate(identifyPerson)) {
+                isSendOpenGate = true;
+                LogUtil.d("runOnUiThread identifyPerson = " + identifyPerson);
+            }
         }
 
         runOnUiThread(new Runnable() {

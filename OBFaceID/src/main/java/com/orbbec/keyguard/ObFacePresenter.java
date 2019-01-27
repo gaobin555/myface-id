@@ -78,17 +78,27 @@ public class ObFacePresenter extends BaseFacePresenter {
      *  打开闸机门
      */
     @Override
-    public void openTheGate() {
-        if (mContext instanceof RecognitionFaceActivity) {
-            // 到UI线程发送开门命令
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //更新UI
-                    serialPortHelper.sendOpenGate(Constant.OPENGATE);
-                }
-            });
+    public boolean openTheGate(int personId) {
+        if (userMap.containsKey(personId)) {
+            if (mContext instanceof RecognitionFaceActivity) {
+                // 到UI线程发送开门命令
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //更新UI
+                        serialPortHelper.sendOpenGate(Constant.OPENGATE);
+                    }
+                });
+            }
+            return true;
         }
+        else {
+            return false;
+        }
+    }
+
+    public boolean isRegistUser(int personId) {
+        return userMap.containsKey(personId);
     }
 
     /**

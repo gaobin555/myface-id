@@ -5,14 +5,22 @@ android {
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.orbbec.keyguard_astra"
+//        applicationId "com.yingeer.y01"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 2018070601
-        versionName "1.0.0"
+        versionCode 20190127
+        versionName "2.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-
+    signingConfigs {
+        release {
+            storeFile file('E:\\huateng.jks')
+            storePassword '1q2w3e4r5t'
+            keyAlias 'key0'
+            keyPassword '1q2w3e4r5t'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -33,7 +41,7 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            def nameFix = "OBFaceID"
+            def nameFix = "FaceID"
             outputFileName = "${nameFix}_${defaultConfig.versionName}_${defaultConfig.versionCode}_${variant.name}.apk"
         }
     }

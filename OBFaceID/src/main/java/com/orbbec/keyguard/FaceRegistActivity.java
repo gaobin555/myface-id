@@ -33,6 +33,8 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
     private LinearLayout ll_insert_pic;
     private LinearLayout ll_insert_delete;
 
+    private User curUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_face_regist);
@@ -115,7 +117,8 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
                                 UserDataUtil.clearDb();
                                 userList = UserDataUtil.updateDataSource();
                                 adapter.updateData(userList);
-                                faceTrack.resetAlbum();
+                                int sucess = faceTrack.resetAlbum();
+                                LogUtil.d("gaobin : resetAlbum sucess = " + sucess);
                                 DataSource dataSource = new DataSource(BaseApplication.getContext());
                                 dataSource.deleteAllUser();
                             }
@@ -138,9 +141,30 @@ public class FaceRegistActivity extends NoCameraActivity implements View.OnClick
     @Override
     public void onClick(int position) {
         // TODO: 2018/12/16 对数据列表进行操作，数据库同步操作
-        User curUser = userList.get(position);
+        curUser = userList.get(position);
         Toast.makeText(this, "点击了 Face ID = " + curUser.getPersonId() + " name = " + curUser.getName(), Toast.LENGTH_SHORT).show();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(FaceRegistActivity.this);
+        builder.setCancelable(false);
+        builder.setMessage("是否删除此用户？")
+                .setNegativeButton("否",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
+                            }
+                        })
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        int suss = faceTrack.deletePerson(Integer.parseInt(curUser.getPersonId()));
+                        LogUtil.d("删除注册的用户 suss = " + suss);
+                        DataSource dataSource = new DataSource(BaseApplication.getContext());
+                        dataSource.deleteById(curUser.getPersonId());
+                        userList = UserDataUtil.updateDataSource();
+                        adapter.updateData(userList);
+                    }
+                });
+        builder.create().show();
     }
 
     @Override

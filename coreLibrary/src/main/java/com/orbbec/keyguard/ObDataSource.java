@@ -373,6 +373,7 @@ public class ObDataSource implements ObSource {
      * 内存
      */
     private void initDataThread() {
+        LogUtil.d("initDataThread()");
         easyThread.execute(new Runnable() {
             @Override
             public void run() {
@@ -416,6 +417,8 @@ public class ObDataSource implements ObSource {
                         mColorBuffer = videoFrameRef.getData();
                         mOrbbecPresenter.onColorUpdate(mColorBuffer, videoFrameRef.getStrideInBytes());
                         videoFrameRef.release();
+                    } else {
+//                        LogUtil.d("mColorStreams is 空");
                     }
                     if (mDepthStreams.contains(mDepthStream)) {
 
@@ -424,7 +427,7 @@ public class ObDataSource implements ObSource {
                         mOrbbecPresenter.onDepthUpdate(mDepthBuffer, videoFrameRef.getWidth(), videoFrameRef.getHeight(), videoFrameRef.getSensorType(), videoFrameRef.getStrideInBytes());
                         videoFrameRef.release();
                     } else {
-
+                        LogUtil.d("mDepthStream is 空");
                     }
 
                     if (mOrbbecPresenter != null) {
