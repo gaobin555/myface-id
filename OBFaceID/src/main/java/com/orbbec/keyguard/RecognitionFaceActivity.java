@@ -56,7 +56,7 @@ import static android.view.View.GONE;
 import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
 
 /**
- * 该Demo 作为参考示例，如有问题请联系:springlovvol@163.com
+ * 该Demo 作为参考示例，如有问题请联系:gaobin555@163.com
  *
  */
 public class RecognitionFaceActivity extends AppCompatActivity implements Runnable,

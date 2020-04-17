@@ -13,14 +13,14 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        release {
-            storeFile file('E:\\huateng.jks')
-            storePassword '1q2w3e4r5t'
-            keyAlias 'key0'
-            keyPassword '1q2w3e4r5t'
-        }
-    }
+//    signingConfigs {
+//        release {
+//            storeFile file('E:\\huateng.jks')
+//            storePassword '1q2w3e4r5t'
+//            keyAlias 'key0'
+//            keyPassword '1q2w3e4r5t'
+//        }
+//    }
     buildTypes {
         release {
             minifyEnabled false

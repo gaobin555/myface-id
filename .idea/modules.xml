@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/OBFaceID/OBFaceID.iml" filepath="$PROJECT_DIR$/OBFaceID/OBFaceID.iml" />
       <module fileurl="file://$PROJECT_DIR$/coreLibrary/coreLibrary.iml" filepath="$PROJECT_DIR$/coreLibrary/coreLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/face-id.iml" filepath="$PROJECT_DIR$/face-id.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/myface-id.iml" filepath="$PROJECT_DIR$/.idea/myface-id.iml" />
     </modules>
   </component>
 </project>
